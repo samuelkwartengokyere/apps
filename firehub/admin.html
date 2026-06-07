@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Admin | FireHub</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" data-firehub-favicon="1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/admin.css" />
+  </head>
+  <body class="admin-body">
+    <!-- Login -->
+    <div id="admin-login" class="admin-login">
+      <div class="admin-login-card">
+        <a class="logo" href="index.html" aria-label="FireHub home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span class="logo-text">FireHub</span>
+        </a>
+        <h1>Admin</h1>
+        <p>Sign in to manage your portfolio content and messages.</p>
+        <form id="login-form" novalidate>
+          <div class="form-group">
+            <label for="login-email">Email</label>
+            <input
+              type="email"
+              id="login-email"
+              name="email"
+              autocomplete="username"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password</label>
+            <input
+              type="password"
+              id="login-password"
+              name="password"
+              autocomplete="current-password"
+              required
+            />
+            <span class="form-error" id="login-error" role="alert"></span>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+        </form>
+        <p class="admin-login-hint">
+          Default email and password: <code>samfine278@gmail.com</code> — change both in Settings after login.
+        </p>
+      </div>
+    </div>
+
+    <!-- Dashboard shell -->
+    <div id="admin-shell" class="admin-shell" aria-hidden="true">
+      <aside class="admin-sidebar" aria-label="Admin navigation">
+        <a class="logo" href="index.html" aria-label="FireHub home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span class="logo-text">FireHub</span>
+        </a>
+
+        <nav class="admin-nav">
+          <button type="button" class="admin-nav-link active" data-panel="dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="7" rx="1" />
+              <rect x="3" y="14" width="7" height="7" rx="1" />
+              <rect x="14" y="14" width="7" height="7" rx="1" />
+            </svg>
+            Dashboard
+          </button>
+          <button type="button" class="admin-nav-link" data-panel="content">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+            Site Content
+          </button>
+          <button type="button" class="admin-nav-link" data-panel="projects">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+            </svg>
+            Projects
+          </button>
+          <button type="button" class="admin-nav-link" data-panel="experience">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+            Experience
+          </button>
+          <button type="button" class="admin-nav-link" data-panel="messages">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            Messages
+          </button>
+          <button type="button" class="admin-nav-link" data-panel="settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            Settings
+          </button>
+        </nav>
+
+        <div class="admin-sidebar-footer">
+          <a href="index.html">View Site</a>
+          <button type="button" id="logout-btn">Sign Out</button>
+        </div>
+      </aside>
+
+      <div class="admin-main">
+        <header class="admin-topbar">
+          <button
+            type="button"
+            id="admin-menu-toggle"
+            class="menu-toggle admin-menu-toggle"
+            aria-label="Toggle admin menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+          <h2 id="page-title">Dashboard</h2>
+          <div class="admin-topbar-actions">
+            <span class="admin-user">Samuel</span>
+          </div>
+        </header>
+
+        <div class="admin-content">
+          <!-- Dashboard -->
+          <section id="panel-dashboard" class="admin-panel active dash" aria-labelledby="page-title">
+            <div class="dash-bg" aria-hidden="true">
+              <span class="dash-orb dash-orb--1"></span>
+              <span class="dash-orb dash-orb--2"></span>
+              <span class="dash-orb dash-orb--3"></span>
+            </div>
+
+            <header class="dash-hero dash-animate" style="--dash-i: 0">
+              <div class="dash-hero-text">
+                <p class="dash-eyebrow" id="dash-greeting">Good morning</p>
+                <h3 class="dash-title">Welcome back, <span class="text-gradient">Samuel</span></h3>
+                <p class="dash-subtitle" id="dash-date"></p>
+              </div>
+              <div class="dash-hero-status">
+                <span class="dash-status-dot" aria-hidden="true"></span>
+                <span id="dash-status-label">Portfolio live</span>
+              </div>
+            </header>
+
+            <section class="dash-section" aria-labelledby="dash-visitors-heading">
+              <div class="dash-section-head dash-animate" style="--dash-i: 1">
+                <h4 id="dash-visitors-heading">Page Visitors</h4>
+                <p id="dash-visitors-source">Counting visits to your portfolio</p>
+              </div>
+              <div class="dash-stats dash-stats--visitors">
+                <article class="dash-stat dash-stat--visitors-day dash-animate" style="--dash-i: 2">
+                  <div class="dash-stat-glow" aria-hidden="true"></div>
+                  <div class="dash-stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                      <circle cx="9" cy="7" r="4" />
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                  </div>
+                  <div class="dash-stat-body">
+                    <p class="dash-stat-label">Today</p>
+                    <p class="dash-stat-value" id="stat-visitors-today" data-count="0">—</p>
+                    <p class="dash-stat-meta">Visitors today</p>
+                  </div>
+                </article>
+                <article class="dash-stat dash-stat--visitors-month dash-animate" style="--dash-i: 3">
+                  <div class="dash-stat-glow" aria-hidden="true"></div>
+                  <div class="dash-stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <rect x="3" y="4" width="18" height="18" rx="2" />
+                      <path d="M16 2v4M8 2v4M3 10h18" />
+                    </svg>
+                  </div>
+                  <div class="dash-stat-body">
+                    <p class="dash-stat-label">This Month</p>
+                    <p class="dash-stat-value" id="stat-visitors-month" data-count="0">—</p>
+                    <p class="dash-stat-meta" id="stat-visitors-month-label">This month</p>
+                  </div>
+                </article>
+                <article class="dash-stat dash-stat--visitors-year dash-animate" style="--dash-i: 4">
+                  <div class="dash-stat-glow" aria-hidden="true"></div>
+                  <div class="dash-stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M3 3v18h18" />
+                      <path d="M7 16l4-4 4 4 5-6" />
+                    </svg>
+                  </div>
+                  <div class="dash-stat-body">
+                    <p class="dash-stat-label">This Year</p>
+                    <p class="dash-stat-value" id="stat-visitors-year" data-count="0">—</p>
+                    <p class="dash-stat-meta" id="stat-visitors-year-label">This year</p>
+                  </div>
+                </article>
+                <article class="dash-stat dash-stat--visitors-total dash-animate" style="--dash-i: 5">
+                  <div class="dash-stat-glow" aria-hidden="true"></div>
+                  <div class="dash-stat-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <circle cx="12" cy="12" r="10" />
+                      <path d="M12 6v6l4 2" />
+                    </svg>
+                  </div>
+                  <div class="dash-stat-body">
+                    <p class="dash-stat-label">All Time</p>
+                    <p class="dash-stat-value" id="stat-visitors-total" data-count="0">—</p>
+                    <p class="dash-stat-meta" id="stat-visitors-pageviews">0 page views</p>
+                  </div>
+                </article>
+              </div>
+            </section>
+
+            <section class="dash-section" aria-labelledby="dash-stats-heading">
+              <div class="dash-section-head dash-animate" style="--dash-i: 6">
+                <h4 id="dash-stats-heading">Admin Statistics</h4>
+                <p>Messages, projects &amp; content</p>
+              </div>
+
+            <div class="dash-stats">
+              <article class="dash-stat dash-stat--messages dash-animate" style="--dash-i: 7">
+                <div class="dash-stat-glow" aria-hidden="true"></div>
+                <div class="dash-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                </div>
+                <div class="dash-stat-body">
+                  <p class="dash-stat-label">Total Messages</p>
+                  <p class="dash-stat-value" id="stat-messages" data-count="0">0</p>
+                  <p class="dash-stat-meta" id="stat-messages-meta">In your inbox</p>
+                </div>
+              </article>
+
+              <article class="dash-stat dash-stat--unread dash-animate" style="--dash-i: 8">
+                <div class="dash-stat-glow" aria-hidden="true"></div>
+                <div class="dash-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                </div>
+                <div class="dash-stat-body">
+                  <p class="dash-stat-label">Unread</p>
+                  <p class="dash-stat-value" id="stat-unread" data-count="0">0</p>
+                  <p class="dash-stat-meta" id="stat-unread-meta">All caught up</p>
+                </div>
+              </article>
+
+              <article class="dash-stat dash-stat--projects dash-animate" style="--dash-i: 9">
+                <div class="dash-stat-glow" aria-hidden="true"></div>
+                <div class="dash-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                  </svg>
+                </div>
+                <div class="dash-stat-body">
+                  <p class="dash-stat-label">Projects</p>
+                  <p class="dash-stat-value" id="stat-projects" data-count="0">0</p>
+                  <p class="dash-stat-meta">Featured on site</p>
+                </div>
+              </article>
+
+              <article class="dash-stat dash-stat--content dash-animate" style="--dash-i: 10">
+                <div class="dash-stat-glow" aria-hidden="true"></div>
+                <div class="dash-stat-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                    <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                  </svg>
+                </div>
+                <div class="dash-stat-body">
+                  <p class="dash-stat-label">Site Content</p>
+                  <p class="dash-stat-value dash-stat-value--text" id="stat-settings">Default</p>
+                  <span class="dash-badge" id="stat-settings-badge">Built-in</span>
+                </div>
+              </article>
+            </div>
+            </section>
+
+            <section class="dash-section" aria-labelledby="dash-portfolio-stats-heading">
+              <div class="dash-section-head dash-animate" style="--dash-i: 11">
+                <h4 id="dash-portfolio-stats-heading">Portfolio Statistics</h4>
+                <p>Shown on your public site hero</p>
+              </div>
+              <div class="dash-highlights">
+                <article class="dash-highlight dash-animate" style="--dash-i: 12">
+                  <span class="dash-highlight-value" id="dash-hero-stat-projects">5+</span>
+                  <span class="dash-highlight-label">Projects shipped</span>
+                </article>
+                <article class="dash-highlight dash-animate" style="--dash-i: 13">
+                  <span class="dash-highlight-value" id="dash-hero-stat-years">3+</span>
+                  <span class="dash-highlight-label">Years building</span>
+                </article>
+                <article class="dash-highlight dash-animate" style="--dash-i: 14">
+                  <span class="dash-highlight-value" id="dash-hero-stat-passion">100%</span>
+                  <span class="dash-highlight-label">Passion driven</span>
+                </article>
+              </div>
+            </section>
+
+            <section class="dash-card dash-analytics dash-animate" style="--dash-i: 15" aria-labelledby="dash-analytics-heading">
+              <div class="dash-card-head">
+                <h4 id="dash-analytics-heading">Analytics</h4>
+                <p>Message and content breakdown</p>
+              </div>
+              <div class="dash-metrics">
+                <div class="dash-metric">
+                  <div class="dash-metric-top">
+                    <span class="dash-metric-label">Visitors today</span>
+                    <span class="dash-metric-value" id="stat-visitors-today-bar">0</span>
+                  </div>
+                  <div class="dash-bar dash-bar--green" role="presentation"><span class="dash-bar-fill" id="bar-visitors-today" style="width: 0%"></span></div>
+                </div>
+                <div class="dash-metric">
+                  <div class="dash-metric-top">
+                    <span class="dash-metric-label">Visitors this month</span>
+                    <span class="dash-metric-value" id="stat-visitors-month-bar">0</span>
+                  </div>
+                  <div class="dash-bar dash-bar--green" role="presentation"><span class="dash-bar-fill" id="bar-visitors-month" style="width: 0%"></span></div>
+                </div>
+                <div class="dash-metric">
+                  <div class="dash-metric-top">
+                    <span class="dash-metric-label">Messages read</span>
+                    <span class="dash-metric-value" id="stat-read">0</span>
+                  </div>
+                  <div class="dash-bar" role="presentation"><span class="dash-bar-fill" id="bar-read" style="width: 0%"></span></div>
+                </div>
+                <div class="dash-metric">
+                  <div class="dash-metric-top">
+                    <span class="dash-metric-label">Unread messages</span>
+                    <span class="dash-metric-value" id="stat-unread-bar">0</span>
+                  </div>
+                  <div class="dash-bar dash-bar--amber" role="presentation"><span class="dash-bar-fill" id="bar-unread" style="width: 0%"></span></div>
+                </div>
+                <div class="dash-metric">
+                  <div class="dash-metric-top">
+                    <span class="dash-metric-label">Featured projects</span>
+                    <span class="dash-metric-value" id="stat-projects-bar">0</span>
+                  </div>
+                  <div class="dash-bar dash-bar--fire" role="presentation"><span class="dash-bar-fill" id="bar-projects" style="width: 0%"></span></div>
+                </div>
+                <div class="dash-metric">
+                  <div class="dash-metric-top">
+                    <span class="dash-metric-label">Content customized</span>
+                    <span class="dash-metric-value" id="stat-content-pct">0%</span>
+                  </div>
+                  <div class="dash-bar dash-bar--violet" role="presentation"><span class="dash-bar-fill" id="bar-content" style="width: 0%"></span></div>
+                </div>
+              </div>
+              <ul class="dash-summary" id="dash-summary-list">
+                <li><strong id="summary-visitors-year">0</strong> visitors this year</li>
+                <li><strong id="summary-visitors-total">0</strong> visitors all time</li>
+                <li><strong id="summary-total-msgs">0</strong> total messages</li>
+                <li><strong id="summary-read-rate">0%</strong> read rate</li>
+                <li><strong id="summary-last-msg">—</strong> last message</li>
+              </ul>
+            </section>
+
+            <div class="dash-grid">
+              <div class="dash-col dash-col--main">
+                <section class="dash-card dash-animate" style="--dash-i: 16" aria-labelledby="dash-actions-heading">
+                  <div class="dash-card-head">
+                    <h4 id="dash-actions-heading">Quick Actions</h4>
+                    <p>Jump to what matters most</p>
+                  </div>
+                  <div class="dash-actions">
+                    <button type="button" class="dash-action-tile admin-nav-link" data-panel="content">
+                      <span class="dash-action-icon dash-action-icon--content" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                          <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                        </svg>
+                      </span>
+                      <span class="dash-action-text">
+                        <strong>Edit Site Content</strong>
+                        <small>Hero, about, stats &amp; email</small>
+                      </span>
+                      <span class="dash-action-arrow" aria-hidden="true">→</span>
+                    </button>
+                    <button type="button" class="dash-action-tile admin-nav-link" data-panel="projects">
+                      <span class="dash-action-icon dash-action-icon--projects" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                          <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </span>
+                      <span class="dash-action-text">
+                        <strong>Manage Projects</strong>
+                        <small>Add, edit &amp; showcase work</small>
+                      </span>
+                      <span class="dash-action-arrow" aria-hidden="true">→</span>
+                    </button>
+                    <button type="button" class="dash-action-tile admin-nav-link" data-panel="experience">
+                      <span class="dash-action-icon dash-action-icon--experience" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                          <circle cx="12" cy="12" r="10" />
+                          <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                      </span>
+                      <span class="dash-action-text">
+                        <strong>Manage Experience</strong>
+                        <small>Career timeline on portfolio</small>
+                      </span>
+                      <span class="dash-action-arrow" aria-hidden="true">→</span>
+                    </button>
+                    <button type="button" class="dash-action-tile admin-nav-link" data-panel="messages">
+                      <span class="dash-action-icon dash-action-icon--messages" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                      </span>
+                      <span class="dash-action-text">
+                        <strong>View Messages</strong>
+                        <small>Contact form submissions</small>
+                      </span>
+                      <span class="dash-action-arrow" aria-hidden="true">→</span>
+                    </button>
+                    <a href="index.html" class="dash-action-tile dash-action-tile--link">
+                      <span class="dash-action-icon dash-action-icon--site" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                      </span>
+                      <span class="dash-action-text">
+                        <strong>Open Portfolio</strong>
+                        <small>Preview the live site</small>
+                      </span>
+                      <span class="dash-action-arrow" aria-hidden="true">↗</span>
+                    </a>
+                  </div>
+                </section>
+              </div>
+
+              <div class="dash-col dash-col--side">
+                <section class="dash-card dash-card--ring dash-animate" style="--dash-i: 17" aria-labelledby="dash-health-heading">
+                  <div class="dash-card-head">
+                    <h4 id="dash-health-heading">Site Health</h4>
+                  </div>
+                  <div class="dash-health">
+                    <div class="dash-ring" aria-hidden="true">
+                      <svg viewBox="0 0 120 120">
+                        <defs>
+                          <linearGradient id="dash-ring-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ff6b2b" />
+                            <stop offset="100%" stop-color="#ff8f5a" />
+                          </linearGradient>
+                        </defs>
+                        <circle class="dash-ring-track" cx="60" cy="60" r="52" />
+                        <circle class="dash-ring-fill" id="dash-ring-fill" cx="60" cy="60" r="52" />
+                      </svg>
+                      <span class="dash-ring-label" id="dash-health-score">100%</span>
+                    </div>
+                    <ul class="dash-health-list">
+                      <li><span class="dash-check" aria-hidden="true">✓</span> Portfolio online</li>
+                      <li><span class="dash-check" aria-hidden="true">✓</span> <span id="dash-health-projects">0 projects</span></li>
+                      <li><span class="dash-check" aria-hidden="true">✓</span> <span id="dash-health-content">Default content</span></li>
+                    </ul>
+                  </div>
+                </section>
+
+                <section class="dash-card dash-animate" style="--dash-i: 18" aria-labelledby="dash-activity-heading">
+                  <div class="dash-card-head dash-card-head--row">
+                    <div>
+                      <h4 id="dash-activity-heading">Recent Activity</h4>
+                      <p>Latest inbox messages</p>
+                    </div>
+                    <button type="button" class="dash-link admin-nav-link" data-panel="messages">View all</button>
+                  </div>
+                  <ul class="dash-activity" id="dash-activity-list">
+                    <li class="dash-activity-empty">No messages yet — submissions appear here.</li>
+                  </ul>
+                </section>
+              </div>
+            </div>
+          </section>
+
+          <!-- Site content -->
+          <section id="panel-content" class="admin-panel sc" aria-label="Site content">
+            <div class="sc-bg" aria-hidden="true">
+              <span class="sc-orb sc-orb--1"></span>
+              <span class="sc-orb sc-orb--2"></span>
+            </div>
+
+            <header class="sc-hero sc-animate" style="--sc-i: 0">
+              <div class="sc-hero-text">
+                <p class="sc-eyebrow">Portfolio editor</p>
+                <h3 class="sc-title">Site <span class="text-gradient">Content</span></h3>
+                <p class="sc-subtitle">Hero, about page, contact, and stats — syncs to your portfolio in real time</p>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm sc-reset-btn" id="reset-content">
+                Reset to Defaults
+              </button>
+            </header>
+
+            <aside class="sc-preview sc-animate" style="--sc-i: 1" aria-label="Live preview">
+              <p class="sc-preview-label">
+                <span class="sc-preview-dot" aria-hidden="true"></span>
+                Live preview
+              </p>
+              <div class="sc-preview-card">
+                <p class="sc-preview-eyebrow">Hi, I'm</p>
+                <p class="sc-preview-name" id="sc-preview-name">Samuel</p>
+                <p class="sc-preview-role" id="sc-preview-role">Full-Stack Developer</p>
+                <p class="sc-preview-desc" id="sc-preview-desc">Your hero description appears here.</p>
+                <div class="sc-preview-hero-photo-row">
+                  <div class="sc-preview-hero-photo-wrap">
+                    <img class="sc-preview-hero-photo" id="sc-preview-hero-photo" alt="" hidden />
+                    <span class="sc-preview-hero-initial" id="sc-preview-hero-initial">S</span>
+                  </div>
+                  <span class="sc-preview-hero-photo-label">Hero portrait</span>
+                </div>
+                <div class="sc-preview-about-block" id="sc-preview-about-block">
+                  <p class="sc-preview-about-heading" id="sc-preview-about-heading">About Me</p>
+                  <div class="sc-preview-about-row">
+                    <div class="sc-preview-about-photo-wrap">
+                      <img class="sc-preview-about-photo" id="sc-preview-about-photo" alt="" hidden />
+                      <span class="sc-preview-about-initial" id="sc-preview-about-initial">S</span>
+                    </div>
+                    <p class="sc-preview-about" id="sc-preview-about">Your about lead appears here.</p>
+                  </div>
+                </div>
+                <ul class="sc-preview-stats">
+                  <li><strong id="sc-preview-stat-projects">5+</strong><span>Projects</span></li>
+                  <li><strong id="sc-preview-stat-years">3+</strong><span>Years</span></li>
+                  <li><strong id="sc-preview-stat-passion">100%</strong><span>Passion</span></li>
+                </ul>
+                <p class="sc-preview-email" id="sc-preview-email">samfine278@gmail.com</p>
+              </div>
+            </aside>
+
+            <form id="content-form" class="sc-form">
+              <section class="sc-block sc-animate" style="--sc-i: 2" aria-labelledby="sc-hero-heading">
+                <div class="sc-block-head">
+                  <span class="sc-block-icon sc-block-icon--hero" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4 id="sc-hero-heading">Hero Section</h4>
+                    <p>First impression on your homepage</p>
+                  </div>
+                </div>
+                <div class="sc-fields admin-form-grid admin-form-grid--2">
+                  <div class="form-group sc-field">
+                    <label for="setting-heroName">Display Name</label>
+                    <input type="text" id="setting-heroName" required placeholder="Your name" />
+                  </div>
+                  <div class="form-group sc-field">
+                    <label for="setting-heroRole">Role / Title</label>
+                    <input type="text" id="setting-heroRole" required placeholder="Full-Stack Developer | UI Builder | Problem Solver" />
+                    <p class="sc-field-hint">Separate multiple roles with <code>|</code> or <code>||</code> — they rotate in the hero typing animation.</p>
+                  </div>
+                  <div class="form-group sc-field sc-field--full">
+                    <label for="setting-heroDescription">Hero Description</label>
+                    <textarea id="setting-heroDescription" rows="3" required placeholder="A short intro about what you build…"></textarea>
+                  </div>
+                  <div class="form-group sc-field sc-field--full">
+                    <label>Hero portrait</label>
+                    <p class="sc-field-hint">Large image on the right of the hero section. Paste a URL or upload an image.</p>
+                    <input type="url" id="setting-heroPhotoUrl" placeholder="assets/images/hero-samuel.png" />
+                    <div class="sc-hero-photo-upload">
+                      <input
+                        type="file"
+                        id="setting-heroPhoto-file"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        hidden
+                      />
+                      <button type="button" class="btn btn-outline btn-sm" id="hero-photo-upload-btn">Upload image</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="hero-photo-clear-btn" hidden>Remove image</button>
+                    </div>
+                    <p class="sc-hero-photo-status" id="hero-photo-status" role="status"></p>
+                  </div>
+                </div>
+              </section>
+
+              <section class="sc-block sc-animate" style="--sc-i: 3" aria-labelledby="sc-about-heading">
+                <div class="sc-block-head">
+                  <span class="sc-block-icon sc-block-icon--about" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4 id="sc-about-heading">About Page</h4>
+                    <p>Photo, copy, facts, and availability badge</p>
+                  </div>
+                </div>
+                <div class="sc-fields">
+                  <div class="form-group sc-field sc-field--full">
+                    <label>Profile photo</label>
+                    <p class="sc-field-hint">Shown on the About section. Paste a URL or upload an image.</p>
+                    <input type="url" id="setting-aboutPhotoUrl" placeholder="https://example.com/photo.jpg" />
+                    <div class="sc-about-photo-upload">
+                      <input type="file" id="setting-aboutPhoto-file" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+                      <button type="button" class="btn btn-outline btn-sm" id="about-photo-upload-btn">Upload photo</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="about-photo-clear-btn" hidden>Remove photo</button>
+                    </div>
+                    <p class="sc-about-photo-status" id="about-photo-status" role="status"></p>
+                  </div>
+                  <div class="admin-form-grid admin-form-grid--2">
+                    <div class="form-group sc-field">
+                      <label for="setting-aboutHeading">Section title</label>
+                      <input type="text" id="setting-aboutHeading" placeholder="About Me" />
+                    </div>
+                    <div class="form-group sc-field">
+                      <label for="setting-aboutPhotoInitial">Initial (no photo)</label>
+                      <input type="text" id="setting-aboutPhotoInitial" maxlength="2" placeholder="S" />
+                    </div>
+                  </div>
+                  <div class="form-group sc-field sc-field--full">
+                    <label for="setting-aboutLead">Lead paragraph</label>
+                    <textarea id="setting-aboutLead" rows="3" required placeholder="A compelling summary of who you are…"></textarea>
+                  </div>
+                  <div class="form-group sc-field sc-field--full">
+                    <label for="setting-aboutBody1">Paragraph 2</label>
+                    <textarea id="setting-aboutBody1" rows="3" placeholder="Your background and what you build…"></textarea>
+                  </div>
+                  <div class="form-group sc-field sc-field--full">
+                    <label for="setting-aboutBody2">Paragraph 3</label>
+                    <textarea id="setting-aboutBody2" rows="3" placeholder="What you do outside of client work…"></textarea>
+                  </div>
+                  <div class="admin-form-grid admin-form-grid--2">
+                    <div class="form-group sc-field">
+                      <label for="setting-aboutLocation">Location</label>
+                      <input type="text" id="setting-aboutLocation" placeholder="Open to remote worldwide" />
+                    </div>
+                    <div class="form-group sc-field">
+                      <label for="setting-aboutFocus">Focus</label>
+                      <input type="text" id="setting-aboutFocus" placeholder="Web apps, e-commerce, dashboards" />
+                    </div>
+                  </div>
+                  <div class="admin-form-grid admin-form-grid--2">
+                    <div class="form-group sc-field">
+                      <label for="setting-aboutEducation">Education</label>
+                      <input type="text" id="setting-aboutEducation" placeholder="Self-taught + continuous learning" />
+                    </div>
+                    <div class="form-group sc-field">
+                      <label for="setting-aboutBadge">Availability badge</label>
+                      <input type="text" id="setting-aboutBadge" placeholder="Available for work" />
+                    </div>
+                  </div>
+                  <div class="form-group sc-field">
+                    <label for="setting-aboutCtaText">Button label</label>
+                    <input type="text" id="setting-aboutCtaText" placeholder="Let's Talk" />
+                  </div>
+                </div>
+              </section>
+
+              <section class="sc-block sc-animate" style="--sc-i: 4" aria-labelledby="sc-contact-heading">
+                <div class="sc-block-head">
+                  <span class="sc-block-icon sc-block-icon--contact" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4 id="sc-contact-heading">Contact</h4>
+                    <p>Email shown across the site</p>
+                  </div>
+                </div>
+                <div class="sc-fields">
+                  <div class="form-group sc-field sc-field--full">
+                    <label for="setting-email">Contact Email</label>
+                    <input type="email" id="setting-email" required placeholder="hello@yourdomain.dev" />
+                  </div>
+                </div>
+              </section>
+
+              <section class="sc-block sc-animate" style="--sc-i: 5" aria-labelledby="sc-stats-heading">
+                <div class="sc-block-head">
+                  <span class="sc-block-icon sc-block-icon--stats" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+                      <path d="M3 3v18h18" />
+                      <path d="M7 16l4-4 4 4 5-6" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4 id="sc-stats-heading">Hero Statistics</h4>
+                    <p>Three highlights below your intro</p>
+                  </div>
+                </div>
+                <div class="sc-fields sc-fields--stats">
+                  <div class="form-group sc-field sc-stat-field">
+                    <label for="setting-statProjects">Projects Shipped</label>
+                    <input type="text" id="setting-statProjects" placeholder="5+" />
+                  </div>
+                  <div class="form-group sc-field sc-stat-field">
+                    <label for="setting-statYears">Years Building</label>
+                    <input type="text" id="setting-statYears" placeholder="3+" />
+                  </div>
+                  <div class="form-group sc-field sc-stat-field">
+                    <label for="setting-statPassion">Passion Driven</label>
+                    <input type="text" id="setting-statPassion" placeholder="100%" />
+                  </div>
+                </div>
+              </section>
+
+              <div class="sc-actions sc-animate" style="--sc-i: 6">
+                <p class="sc-actions-hint">Changes sync to your portfolio in real time (keep the site open in another tab).</p>
+                <button type="submit" class="btn btn-primary sc-save-btn">
+                  <span>Save Content</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <!-- Projects -->
+          <section id="panel-projects" class="admin-panel pj" aria-label="Projects">
+            <div class="pj-bg" aria-hidden="true">
+              <span class="pj-orb pj-orb--1"></span>
+              <span class="pj-orb pj-orb--2"></span>
+            </div>
+
+            <header class="pj-hero pj-animate" style="--pj-i: 0">
+              <div class="pj-hero-text">
+                <p class="pj-eyebrow">Portfolio showcase</p>
+                <h3 class="pj-title">Featured <span class="text-gradient">Projects</span></h3>
+                <p class="pj-subtitle">Manage the work displayed on your public portfolio grid</p>
+              </div>
+              <button type="button" class="btn btn-primary pj-add-btn" id="add-project-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add Project
+              </button>
+            </header>
+
+            <div class="pj-stats pj-animate" style="--pj-i: 1">
+              <article class="pj-stat">
+                <span class="pj-stat-value" id="pj-stat-total">0</span>
+                <span class="pj-stat-label">Total projects</span>
+              </article>
+              <article class="pj-stat">
+                <span class="pj-stat-value" id="pj-stat-tags">0</span>
+                <span class="pj-stat-label">Unique tags</span>
+              </article>
+              <article class="pj-stat">
+                <span class="pj-stat-value" id="pj-stat-tech">0</span>
+                <span class="pj-stat-label">Technologies</span>
+              </article>
+            </div>
+
+            <div id="projects-grid" class="pj-grid" role="list"></div>
+
+            <div id="projects-empty" class="pj-empty pj-animate" style="--pj-i: 2" hidden>
+              <div class="pj-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
+                </svg>
+              </div>
+              <h4>No projects yet</h4>
+              <p>Showcase your best work — add your first featured project.</p>
+              <button type="button" class="btn btn-primary" id="add-project-empty-btn">Add Project</button>
+            </div>
+          </section>
+
+          <!-- Experience -->
+          <section id="panel-experience" class="admin-panel exp" aria-label="Experience">
+            <div class="exp-bg" aria-hidden="true">
+              <span class="exp-orb exp-orb--1"></span>
+              <span class="exp-orb exp-orb--2"></span>
+            </div>
+
+            <header class="exp-hero exp-animate" style="--exp-i: 0">
+              <div class="exp-hero-text">
+                <p class="exp-eyebrow">Career timeline</p>
+                <h3 class="exp-title">Work <span class="text-gradient">Experience</span></h3>
+                <p class="exp-subtitle">Roles shown on your portfolio timeline (newest at the top)</p>
+              </div>
+              <button type="button" class="btn btn-primary exp-add-btn" id="add-experience-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Add Experience
+              </button>
+            </header>
+
+            <div class="exp-stats exp-animate" style="--exp-i: 1">
+              <article class="exp-stat">
+                <span class="exp-stat-value" id="exp-stat-total">0</span>
+                <span class="exp-stat-label">Timeline entries</span>
+              </article>
+              <article class="exp-stat">
+                <span class="exp-stat-value" id="exp-stat-current">0</span>
+                <span class="exp-stat-label">Current roles</span>
+              </article>
+            </div>
+
+            <div id="experience-list" class="exp-list" role="list"></div>
+
+            <div id="experience-empty" class="exp-empty exp-animate" style="--exp-i: 2" hidden>
+              <div class="exp-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <h4>No experience yet</h4>
+              <p>Add roles, internships, and jobs for your portfolio timeline.</p>
+              <button type="button" class="btn btn-primary" id="add-experience-empty-btn">Add Experience</button>
+            </div>
+          </section>
+
+          <!-- Messages -->
+          <section id="panel-messages" class="admin-panel msg" aria-label="Messages">
+            <div class="msg-bg" aria-hidden="true">
+              <span class="msg-orb msg-orb--1"></span>
+              <span class="msg-orb msg-orb--2"></span>
+              <span class="msg-orb msg-orb--3"></span>
+            </div>
+
+            <header class="msg-hero msg-animate" style="--msg-i: 0">
+              <div class="msg-hero-text">
+                <p class="msg-eyebrow">Contact inbox</p>
+                <h3 class="msg-title">Your <span class="text-gradient">Messages</span></h3>
+                <p class="msg-subtitle">Submissions from your portfolio contact form land here</p>
+              </div>
+              <button type="button" class="btn btn-ghost msg-mark-all" id="mark-all-read">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M20 6L9 17l-5-5" />
+                </svg>
+                Mark all read
+              </button>
+            </header>
+
+            <div class="msg-stats msg-animate" style="--msg-i: 1" role="tablist" aria-label="Filter messages">
+              <button
+                type="button"
+                class="msg-stat msg-stat--filter is-active"
+                data-msg-filter="all"
+                role="tab"
+                aria-selected="true"
+                id="msg-filter-all"
+              >
+                <span class="msg-stat-icon msg-stat-icon--total" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                    <polyline points="22,6 12,13 2,6" />
+                  </svg>
+                </span>
+                <span class="msg-stat-value" id="msg-stat-total">0</span>
+                <span class="msg-stat-label">Total messages</span>
+              </button>
+              <button
+                type="button"
+                class="msg-stat msg-stat--filter msg-stat--today"
+                data-msg-filter="today"
+                role="tab"
+                aria-selected="false"
+                id="msg-filter-today"
+              >
+                <span class="msg-stat-icon msg-stat-icon--today" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </span>
+                <span class="msg-stat-value" id="msg-stat-today">0</span>
+                <span class="msg-stat-label">Today&rsquo;s messages</span>
+              </button>
+              <button
+                type="button"
+                class="msg-stat msg-stat--filter msg-stat--unread"
+                data-msg-filter="unread"
+                role="tab"
+                aria-selected="false"
+                id="msg-filter-unread"
+              >
+                <span class="msg-stat-icon msg-stat-icon--unread" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                </span>
+                <span class="msg-stat-value" id="msg-stat-unread">0</span>
+                <span class="msg-stat-label">Unread</span>
+              </button>
+              <button
+                type="button"
+                class="msg-stat msg-stat--filter"
+                data-msg-filter="read"
+                role="tab"
+                aria-selected="false"
+                id="msg-filter-read"
+              >
+                <span class="msg-stat-icon msg-stat-icon--read" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                </span>
+                <span class="msg-stat-value" id="msg-stat-read">0</span>
+                <span class="msg-stat-label">Read</span>
+              </button>
+            </div>
+
+            <div id="messages-list" class="msg-list" role="list"></div>
+
+            <div id="messages-empty" class="msg-empty msg-animate" style="--msg-i: 2" hidden>
+              <div class="msg-empty-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+              </div>
+              <h4 id="messages-empty-title">Inbox is empty</h4>
+              <p id="messages-empty-text">When visitors use your contact form, their messages will appear here.</p>
+            </div>
+          </section>
+
+          <!-- Settings -->
+          <section id="panel-settings" class="admin-panel stg" aria-label="Settings">
+            <div class="stg-bg" aria-hidden="true">
+              <span class="stg-orb stg-orb--1"></span>
+              <span class="stg-orb stg-orb--2"></span>
+              <span class="stg-orb stg-orb--3"></span>
+            </div>
+
+            <header class="stg-hero stg-animate" style="--stg-i: 0">
+              <div class="stg-hero-text">
+                <p class="stg-eyebrow">Admin preferences</p>
+                <h3 class="stg-title">Account &amp; <span class="text-gradient">Data</span></h3>
+                <p class="stg-subtitle">Manage your brand, login, storage overview, and backups</p>
+              </div>
+              <div class="stg-hero-badge" aria-hidden="true">
+                <span class="stg-hero-badge-dot"></span>
+                Local storage
+              </div>
+            </header>
+
+            <div class="stg-tabs stg-animate" style="--stg-i: 1" role="tablist" aria-label="Settings sections">
+              <button
+                type="button"
+                class="stg-tab is-active"
+                data-stg-tab="overview"
+                role="tab"
+                aria-selected="true"
+                aria-controls="stg-panel-overview"
+                id="stg-tab-overview"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="3" width="7" height="7" />
+                  <rect x="14" y="3" width="7" height="7" />
+                  <rect x="14" y="14" width="7" height="7" />
+                  <rect x="3" y="14" width="7" height="7" />
+                </svg>
+                Overview
+              </button>
+              <button
+                type="button"
+                class="stg-tab"
+                data-stg-tab="logo"
+                role="tab"
+                aria-selected="false"
+                aria-controls="stg-panel-logo"
+                id="stg-tab-logo"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                  <circle cx="8.5" cy="8.5" r="1.5" />
+                  <polyline points="21 15 16 10 5 21" />
+                </svg>
+                Brand &amp; favicon
+              </button>
+              <button
+                type="button"
+                class="stg-tab"
+                data-stg-tab="login"
+                role="tab"
+                aria-selected="false"
+                aria-controls="stg-panel-login"
+                id="stg-tab-login"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                Login
+              </button>
+              <button
+                type="button"
+                class="stg-tab"
+                data-stg-tab="backup"
+                role="tab"
+                aria-selected="false"
+                aria-controls="stg-panel-backup"
+                id="stg-tab-backup"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                Backup
+              </button>
+            </div>
+
+            <div class="stg-tab-panels">
+              <div
+                id="stg-panel-overview"
+                class="stg-tab-panel is-active stg-animate"
+                style="--stg-i: 2"
+                role="tabpanel"
+                aria-labelledby="stg-tab-overview"
+              >
+                <div class="stg-overview">
+                  <article class="stg-overview-card">
+                    <span class="stg-overview-icon stg-overview-icon--login" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                      </svg>
+                    </span>
+                    <div>
+                      <span class="stg-overview-label">Signed in as</span>
+                      <span class="stg-overview-value" id="stg-login-display">—</span>
+                    </div>
+                  </article>
+                  <article class="stg-overview-card">
+                    <span class="stg-overview-icon stg-overview-icon--data" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <ellipse cx="12" cy="5" rx="9" ry="3" />
+                        <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3" />
+                        <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5" />
+                      </svg>
+                    </span>
+                    <div>
+                      <span class="stg-overview-label">Stored items</span>
+                      <span class="stg-overview-value" id="stg-data-count">0</span>
+                    </div>
+                  </article>
+                  <article class="stg-overview-card">
+                    <span class="stg-overview-icon stg-overview-icon--size" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                      </svg>
+                    </span>
+                    <div>
+                      <span class="stg-overview-label">Browser footprint</span>
+                      <span class="stg-overview-value" id="stg-storage-size">0 KB</span>
+                    </div>
+                  </article>
+                </div>
+                <p class="stg-tab-hint">Use the tabs above to change your logo, update login credentials, or export a backup.</p>
+              </div>
+
+              <div
+                id="stg-panel-logo"
+                class="stg-tab-panel stg-animate"
+                style="--stg-i: 2"
+                role="tabpanel"
+                aria-labelledby="stg-tab-logo"
+                hidden
+              >
+            <article class="stg-card stg-card--logo">
+              <div class="stg-card-head">
+                <span class="stg-card-icon stg-card-icon--logo" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                </span>
+                <div>
+                  <h4>Brand logo &amp; favicon</h4>
+                  <p>Updates the site logo and the icon shown in the browser tab (admin and portfolio).</p>
+                </div>
+              </div>
+              <form id="logo-form" class="stg-form stg-logo-form">
+                <div class="stg-logo-preview-wrap">
+                  <p class="stg-logo-preview-label">Preview</p>
+                  <a class="logo stg-logo-preview" href="index.html" aria-label="Logo preview">
+                    <span class="logo-mark" aria-hidden="true"></span>
+                    <span class="logo-text">FireHub</span>
+                  </a>
+                </div>
+                <div class="form-group stg-field sc-field--full">
+                  <label for="setting-logoUrl">Logo image URL</label>
+                  <p class="stg-logo-hint">Upload or link a full logo (with text in the image if you like). When set, only the image is shown — no separate brand name beside it.</p>
+                  <input type="url" id="setting-logoUrl" placeholder="https://example.com/logo.png" />
+                  <div class="stg-logo-upload">
+                    <input type="file" id="setting-logo-file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" hidden />
+                    <button type="button" class="btn btn-outline btn-sm" id="logo-image-upload-btn">Upload logo</button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="logo-image-clear-btn" hidden>Remove custom logo</button>
+                  </div>
+                  <p class="stg-logo-status" id="logo-image-status" role="status"></p>
+                </div>
+                <p class="stg-brand-name-hint" id="stg-brand-name-hint" hidden></p>
+                <div class="form-group stg-field" id="stg-brand-name-wrap">
+                  <label for="setting-logoText">Brand name <span class="pj-optional">(default logo only)</span></label>
+                  <input type="text" id="setting-logoText" placeholder="FireHub" maxlength="32" />
+                  <p class="stg-logo-hint">Shown next to the fire icon when you have no custom logo image. Also used as the browser tab title below.</p>
+                </div>
+                <div class="stg-brand-divider" aria-hidden="true"></div>
+                <div class="form-group stg-field sc-field--full">
+                  <label for="setting-faviconUrl">Favicon (browser tab icon)</label>
+                  <div class="stg-favicon-preview-wrap">
+                    <p class="stg-logo-preview-label">Tab preview</p>
+                    <div class="stg-favicon-tab">
+                      <img id="stg-favicon-preview" src="assets/favicon.svg" alt="" width="16" height="16" />
+                      <span class="stg-favicon-tab-title" id="stg-favicon-tab-title">FireHub</span>
+                    </div>
+                  </div>
+                  <p class="stg-logo-hint">Use a square image (32×32 or larger). ICO, PNG, SVG, or WebP work well.</p>
+                  <input type="url" id="setting-faviconUrl" placeholder="https://example.com/favicon.png" />
+                  <div class="stg-logo-upload">
+                    <input type="file" id="setting-favicon-file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml,image/x-icon,.ico" hidden />
+                    <button type="button" class="btn btn-outline btn-sm" id="favicon-image-upload-btn">Upload favicon</button>
+                    <button type="button" class="btn btn-ghost btn-sm" id="favicon-image-clear-btn" hidden>Remove custom favicon</button>
+                  </div>
+                  <p class="stg-logo-status" id="favicon-image-status" role="status"></p>
+                </div>
+                <button type="submit" class="btn btn-primary stg-submit-btn stg-logo-save-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                  </svg>
+                  Save brand
+                </button>
+              </form>
+            </article>
+              </div>
+
+              <div
+                id="stg-panel-login"
+                class="stg-tab-panel stg-animate"
+                style="--stg-i: 2"
+                role="tabpanel"
+                aria-labelledby="stg-tab-login"
+                hidden
+              >
+              <article class="stg-card stg-card--security">
+                <div class="stg-card-head">
+                  <span class="stg-card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4>Change login</h4>
+                    <p>Email and password use the same value — pick a valid email you will remember.</p>
+                  </div>
+                </div>
+                <form id="password-form" class="stg-form">
+                  <div class="form-group stg-field">
+                    <label for="current-password">Current login</label>
+                    <input type="email" id="current-password" autocomplete="username" required placeholder="samfine278@gmail.com" />
+                  </div>
+                  <div class="admin-form-grid admin-form-grid--2">
+                    <div class="form-group stg-field">
+                      <label for="new-password">New email &amp; password</label>
+                      <input type="email" id="new-password" autocomplete="new-password" required placeholder="you@domain.com" />
+                    </div>
+                    <div class="form-group stg-field">
+                      <label for="confirm-password">Confirm</label>
+                      <input type="email" id="confirm-password" autocomplete="new-password" required placeholder="you@domain.com" />
+                    </div>
+                  </div>
+                  <span class="form-error" id="password-error" role="alert"></span>
+                  <button type="submit" class="btn btn-primary stg-submit-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    </svg>
+                    Update login
+                  </button>
+                </form>
+              </article>
+              </div>
+
+              <div
+                id="stg-panel-backup"
+                class="stg-tab-panel stg-animate"
+                style="--stg-i: 2"
+                role="tabpanel"
+                aria-labelledby="stg-tab-backup"
+                hidden
+              >
+              <article class="stg-card stg-card--backup">
+                <div class="stg-card-head">
+                  <span class="stg-card-icon stg-card-icon--backup" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4>Data &amp; backup</h4>
+                    <p>Export site content, projects, experience, and messages as JSON before clearing browser data or switching devices.</p>
+                  </div>
+                </div>
+                <ul class="stg-backup-list">
+                  <li><span>Site content</span><strong id="stg-export-settings">✓</strong></li>
+                  <li><span>Projects</span><strong id="stg-export-projects">0</strong></li>
+                  <li><span>Experience</span><strong id="stg-export-experiences">0</strong></li>
+                  <li><span>Messages</span><strong id="stg-export-messages">0</strong></li>
+                </ul>
+                <button type="button" class="btn btn-outline stg-export-btn" id="export-data">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  Export JSON backup
+                </button>
+              </article>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message modal -->
+    <div id="message-modal" class="admin-modal-overlay msg-modal-overlay" hidden>
+      <div class="admin-modal msg-modal" role="dialog" aria-labelledby="message-modal-title" aria-modal="true">
+        <div class="msg-modal-head">
+          <div>
+            <p class="msg-modal-eyebrow">Inbox message</p>
+            <h3 id="message-modal-title">Message</h3>
+          </div>
+          <button type="button" class="msg-modal-close" data-close-modal="message-modal" aria-label="Close">×</button>
+        </div>
+        <div id="message-modal-body" class="msg-modal-body"></div>
+        <div class="msg-modal-footer">
+          <a id="message-modal-reply" class="btn btn-primary msg-reply-btn" href="#">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3 10h11a4 4 0 0 1 0 8H9" />
+              <path d="M3 10l4-4M3 10l4 4" />
+            </svg>
+            Reply by email
+          </a>
+          <button type="button" class="btn btn-ghost" data-close-modal="message-modal">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Experience modal -->
+    <div id="experience-modal" class="admin-modal-overlay exp-modal-overlay" hidden>
+      <div class="admin-modal exp-modal" role="dialog" aria-labelledby="experience-modal-title" aria-modal="true">
+        <div class="exp-modal-head">
+          <div>
+            <p class="exp-modal-eyebrow">Timeline entry</p>
+            <h3 id="experience-modal-title">Add Experience</h3>
+          </div>
+          <button type="button" class="exp-modal-close" data-close-modal="experience-modal" aria-label="Close">×</button>
+        </div>
+
+        <form id="experience-form" class="exp-modal-form">
+          <input type="hidden" id="experience-id" />
+
+          <div class="exp-modal-scroll">
+            <div class="exp-modal-preview" id="exp-modal-preview" hidden>
+              <p class="exp-modal-preview-label">Feature image preview</p>
+              <div class="exp-modal-preview-frame">
+                <img class="exp-modal-preview-img" id="exp-modal-preview-img" alt="" />
+              </div>
+            </div>
+            <div class="exp-modal-fields">
+              <div class="form-group exp-field sc-field--full">
+                <label>Feature image <span class="exp-optional">(optional)</span></label>
+                <p class="exp-image-hint">Company logo, team photo, or workplace image shown on the portfolio timeline.</p>
+                <input type="url" id="experience-image-url" placeholder="https://example.com/logo.png" />
+                <div class="exp-image-upload">
+                  <input
+                    type="file"
+                    id="experience-image-file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    hidden
+                  />
+                  <button type="button" class="btn btn-outline btn-sm" id="experience-image-upload-btn">
+                    Upload image
+                  </button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="experience-image-clear-btn" hidden>
+                    Remove image
+                  </button>
+                </div>
+                <p class="exp-image-status" id="experience-image-status" role="status"></p>
+              </div>
+              <div class="admin-form-grid admin-form-grid--2">
+                <div class="form-group exp-field">
+                  <label for="experience-period">Date range</label>
+                  <input
+                    type="text"
+                    id="experience-period"
+                    required
+                    placeholder="Apr 2026 — Present"
+                  />
+                </div>
+                <div class="form-group exp-field">
+                  <label for="experience-datetime">Machine date <span class="exp-optional">(optional)</span></label>
+                  <input
+                    type="text"
+                    id="experience-datetime"
+                    placeholder="2026-04"
+                  />
+                  <p class="exp-field-hint">Used for the <code>datetime</code> attribute (e.g. 2025-01 or 2024-10/2025-09).</p>
+                </div>
+              </div>
+              <div class="form-group exp-field">
+                <label for="experience-title">Role / title</label>
+                <input type="text" id="experience-title" required placeholder="Software Engineer" />
+              </div>
+              <div class="form-group exp-field">
+                <label for="experience-organization">Organization</label>
+                <input
+                  type="text"
+                  id="experience-organization"
+                  required
+                  placeholder="TechHub Africa · Accra, Ghana"
+                />
+              </div>
+              <div class="form-group exp-field">
+                <label for="experience-description">Description</label>
+                <textarea
+                  id="experience-description"
+                  rows="4"
+                  required
+                  placeholder="What you did in this role…"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="exp-modal-footer">
+            <button type="button" class="btn btn-ghost" data-close-modal="experience-modal">Cancel</button>
+            <button type="submit" class="btn btn-primary exp-save-btn">
+              <span>Save Experience</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Project modal -->
+    <div id="project-modal" class="admin-modal-overlay pj-modal-overlay" hidden>
+      <div class="admin-modal pj-modal" role="dialog" aria-labelledby="project-modal-title" aria-modal="true">
+        <div class="pj-modal-head">
+          <div>
+            <p class="pj-modal-eyebrow">Project editor</p>
+            <h3 id="project-modal-title">Add Project</h3>
+          </div>
+          <button type="button" class="pj-modal-close" data-close-modal="project-modal" aria-label="Close">×</button>
+        </div>
+
+        <form id="project-form" class="pj-modal-form">
+          <input type="hidden" id="project-id" />
+
+          <div class="pj-modal-scroll">
+            <div class="pj-modal-preview" id="pj-modal-preview">
+              <p class="pj-modal-preview-label">Card preview</p>
+              <div class="pj-modal-preview-banner project-image--none" id="pj-modal-preview-banner">
+                <img class="pj-banner-img" id="pj-modal-preview-img" alt="" hidden />
+                <span class="pj-modal-preview-tag" id="pj-modal-preview-tag">Tag</span>
+              </div>
+            </div>
+
+            <div class="pj-modal-fields">
+              <div class="form-group pj-field sc-field--full">
+                <label>Featured image</label>
+                <p class="pj-image-hint">Paste a URL or upload an image (shown on project cards).</p>
+                <input type="url" id="project-image-url" placeholder="https://example.com/screenshot.jpg" />
+                <div class="pj-image-upload">
+                  <input type="file" id="project-image-file" accept="image/jpeg,image/png,image/webp,image/gif" hidden />
+                  <button type="button" class="btn btn-outline btn-sm" id="project-image-upload-btn">Upload image</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="project-image-clear-btn" hidden>Remove image</button>
+                </div>
+                <p class="pj-image-status" id="project-image-status" role="status"></p>
+              </div>
+              <div class="form-group pj-field">
+                <label for="project-title">Title</label>
+                <input type="text" id="project-title" required placeholder="My Awesome Project" />
+              </div>
+              <div class="form-group pj-field">
+                <label for="project-tag">Tag</label>
+                <input type="text" id="project-tag" placeholder="Next.js" />
+              </div>
+              <div class="admin-form-grid admin-form-grid--2">
+                <div class="form-group pj-field">
+                  <label for="project-progress">Progress</label>
+                  <div class="pj-select-wrap pj-select-wrap--status" id="project-progress-wrap">
+                    <span class="pj-select-status-dot" aria-hidden="true"></span>
+                    <select id="project-progress" class="pj-select" required>
+                      <option value="done">Done — Visit Site on portfolio</option>
+                      <option value="in-progress">In Progress — status badge only</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-group pj-field">
+                  <label for="project-image">Fallback gradient</label>
+                  <div class="pj-select-wrap pj-select-wrap--theme">
+                    <span
+                      class="pj-select-swatch project-image--none"
+                      id="project-gradient-swatch"
+                      aria-hidden="true"
+                    ></span>
+                    <select id="project-image" class="pj-select">
+                      <option value="project-image--none" selected>None — plain background</option>
+                      <option value="project-image--pastry">Pastry — warm tones</option>
+                      <option value="project-image--noir">Noir — dark &amp; moody</option>
+                      <option value="project-image--firehub">FireHub — brand fire</option>
+                    </select>
+                  </div>
+                  <p class="pj-select-hint">Used when no featured image is set.</p>
+                </div>
+              </div>
+              <div class="form-group pj-field">
+                <label for="project-description">Description</label>
+                <textarea id="project-description" rows="3" required placeholder="What makes this project special…"></textarea>
+              </div>
+              <div class="form-group pj-field">
+                <label for="project-tech">Technologies (comma-separated)</label>
+                <input type="text" id="project-tech" placeholder="React, Node.js, TypeScript" />
+              </div>
+              <div class="admin-form-grid admin-form-grid--2">
+                <div class="form-group pj-field">
+                  <label for="project-demo">Visit site — live demo <span class="pj-optional">(optional)</span></label>
+                  <input type="text" id="project-demo" inputmode="url" placeholder="https://example.com" />
+                </div>
+                <div class="form-group pj-field">
+                  <label for="project-source">Visit site — source <span class="pj-optional">(optional)</span></label>
+                  <input type="text" id="project-source" inputmode="url" placeholder="https://github.com/..." />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pj-modal-footer">
+            <button type="button" class="btn btn-ghost" data-close-modal="project-modal">Cancel</button>
+            <button type="submit" class="btn btn-primary pj-save-btn">
+              <span>Save Project</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p id="admin-toast" class="admin-toast" role="status" aria-live="polite"></p>
+
+    <script src="js/sync.js" defer></script>
+    <script src="js/analytics.js" defer></script>
+    <script src="js/admin.js" defer></script>
+  </body>
+</html>

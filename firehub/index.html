@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FireHub — Samuel Kwarteng Okyere. Software engineer focused on secure web apps, cloud, and cybersecurity."
+    />
+    <title>FireHub | Samuel — Software Engineer</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" data-firehub-favicon="1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Mobile header -->
+    <header class="mobile-header" aria-label="Site header">
+      <a class="logo" href="#home" aria-label="FireHub home">
+        <span class="logo-mark" aria-hidden="true"></span>
+        <span class="logo-text">FireHub</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+        aria-label="Open navigation menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <!-- Sidebar navigation -->
+    <aside class="sidebar" id="site-nav" aria-label="Primary navigation">
+      <div class="sidebar-inner">
+        <a class="logo sidebar-logo" href="#home" aria-label="FireHub home">
+          <span class="logo-mark" aria-hidden="true"></span>
+          <span class="logo-text">FireHub</span>
+        </a>
+
+        <nav class="nav">
+          <ul class="nav-list">
+            <li><a class="nav-link active" href="#home" data-section="home">Home</a></li>
+            <li><a class="nav-link" href="#about" data-section="about">About</a></li>
+            <li><a class="nav-link" href="#skills" data-section="skills">Skills</a></li>
+            <li><a class="nav-link" href="#projects" data-section="projects">Projects</a></li>
+            <li><a class="nav-link" href="#experience" data-section="experience">Experience</a></li>
+            <li><a class="nav-link" href="#contact" data-section="contact">Contact</a></li>
+          </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="social-links" aria-label="Social links">
+            <a href="https://github.com/samuelkwartengokyere" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.48 0-.24-.01-.86-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.12-1.5-1.12-1.5-.92-.64.07-.63.07-.63 1.02.07 1.55 1.07 1.55 1.07.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.2 9.2 0 0 1 12 6.84c.83.01 1.67.11 2.45.33 1.91-1.32 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.95-2.34 4.81-4.57 5.07.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.59.69.49A10.03 10.03 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/></svg>
+            </a>
+            <a href="https://linkedin.com/in/samuel-kwarteng-okyere" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.34V9h3.42v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z"/></svg>
+            </a>
+            <a href="mailto:samfine278@gmail.com" aria-label="Email">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/></svg>
+            </a>
+          </div>
+          <p class="sidebar-copy">&copy; <span id="year"></span> FireHub</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="nav-overlay" hidden aria-hidden="true"></div>
+
+    <main id="main" class="main">
+      <!-- Hero -->
+      <section id="home" class="section hero" aria-labelledby="hero-heading">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="section-inner hero-inner">
+          <p class="eyebrow reveal">Welcome to my portfolio</p>
+          <h1 id="hero-heading" class="hero-title reveal">
+            Hi, I'm <span class="text-gradient">Samuel</span>
+          </h1>
+          <p class="hero-role reveal">
+            <span id="typed-role" aria-live="polite">Software Engineer</span>
+          </p>
+          <p class="hero-description reveal">
+            Results-driven software engineer focused on secure, responsive web
+            applications, cloud-ready delivery, and intelligent systems that solve
+            real-world problems.
+          </p>
+          <div class="hero-actions reveal">
+            <a class="btn btn-primary" href="#projects">View My Work</a>
+            <a class="btn btn-outline" href="#contact">Get In Touch</a>
+          </div>
+          <div class="hero-stats reveal" aria-label="Quick highlights">
+            <div class="stat">
+              <span class="stat-value">4+</span>
+              <span class="stat-label">Projects shipped</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">3+</span>
+              <span class="stat-label">Years building</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">100%</span>
+              <span class="stat-label">Passion driven</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual reveal">
+          <div class="profile-placeholder has-photo">
+            <img
+              class="profile-photo-img"
+              id="hero-profile-img"
+              src="assets/images/hero-samuel.png"
+              data-default-src="assets/images/hero-samuel.png"
+              alt="Samuel Kwarteng Okyere"
+              width="420"
+              height="560"
+              loading="eager"
+              decoding="async"
+            />
+            <span class="profile-photo-initial" id="hero-profile-initial" hidden>S</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section id="about" class="section" aria-labelledby="about-heading">
+        <div class="section-inner">
+          <header class="section-header reveal">
+            <span class="section-number">01</span>
+            <h2 id="about-heading">About Me</h2>
+          </header>
+          <div class="about-grid">
+            <div class="about-image reveal">
+              <div class="about-photo" id="about-photo">
+                <img class="about-photo-img" id="about-photo-img" alt="" hidden />
+                <span class="about-photo-initial" id="about-photo-initial">S</span>
+              </div>
+              <div class="about-badge" id="about-badge">
+                <span class="badge-dot" aria-hidden="true"></span>
+                <span id="about-badge-text">Available for work</span>
+              </div>
+            </div>
+            <div class="about-content reveal">
+              <p class="lead" id="about-lead">
+                I'm Samuel Kwarteng Okyere — a software engineer with experience in
+                front-end development, cloud computing, and cybersecurity.
+              </p>
+              <p id="about-body-1">
+                I currently work as a Web &amp; Cybersecurity Analyst at TechHub Africa
+                in Accra, building secure and scalable digital solutions. I develop
+                responsive interfaces, conduct vulnerability assessments, and apply
+                secure coding practices across authentication, validation, and data
+                protection.
+              </p>
+              <p id="about-body-2">
+                I hold a BSc in Information Technology from the University of Energy
+                and Natural Resources (2024) and I'm passionate about artificial
+                intelligence, mentorship, and shipping reliable software — from
+                CMS-powered platforms to data-driven dashboards.
+              </p>
+              <ul class="about-facts">
+                <li id="about-fact-location"><strong>Location:</strong> Accra, Ghana — open to remote</li>
+                <li id="about-fact-focus"><strong>Focus:</strong> Secure web apps, front-end &amp; cloud</li>
+                <li id="about-fact-education"><strong>Education:</strong> BSc Information Technology, UENR (2024)</li>
+              </ul>
+              <a class="btn btn-primary" href="#contact" id="about-cta">Let's Talk</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Skills -->
+      <section id="skills" class="section section-alt" aria-labelledby="skills-heading">
+        <div class="section-inner">
+          <header class="section-header reveal">
+            <span class="section-number">02</span>
+            <h2 id="skills-heading">Skills &amp; Tools</h2>
+          </header>
+          <p class="section-intro reveal">
+            Core skills across front-end engineering, cloud, cybersecurity, and modern tooling.
+          </p>
+          <div class="skills-grid reveal">
+            <article class="skill-card">
+              <h3>Programming &amp; Frontend</h3>
+              <ul class="tag-list">
+                <li>JavaScript</li>
+                <li>React</li>
+                <li>HTML &amp; CSS</li>
+                <li>Python</li>
+                <li>Flutter</li>
+                <li>Responsive Design</li>
+              </ul>
+            </article>
+            <article class="skill-card">
+              <h3>Cloud, Security &amp; DevOps</h3>
+              <ul class="tag-list">
+                <li>AWS</li>
+                <li>Docker</li>
+                <li>CI/CD</li>
+                <li>Secure Coding</li>
+                <li>Vulnerability Assessment</li>
+                <li>REST APIs</li>
+              </ul>
+            </article>
+            <article class="skill-card">
+              <h3>Tools &amp; Emerging Tech</h3>
+              <ul class="tag-list">
+                <li>Git &amp; GitHub</li>
+                <li>Sanity CMS</li>
+                <li>Machine Learning</li>
+                <li>Blockchain</li>
+                <li>VS Code / Cursor</li>
+                <li>Accessibility</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Projects -->
+      <section id="projects" class="section" aria-labelledby="projects-heading">
+        <div class="section-inner">
+          <header class="section-header reveal">
+            <span class="section-number">03</span>
+            <h2 id="projects-heading">Featured Projects</h2>
+          </header>
+          <p class="section-intro reveal">
+            Selected projects from my portfolio — dashboards, CMS platforms, and front-end apps.
+          </p>
+          <div class="projects-grid" id="projects-grid" data-projects-limit="3"></div>
+          <div class="projects-more reveal" id="projects-more" hidden>
+            <a href="projects.html" class="btn btn-outline projects-view-all">View all projects</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Experience -->
+      <section id="experience" class="section section-alt" aria-labelledby="experience-heading">
+        <div class="section-inner">
+          <header class="section-header reveal">
+            <span class="section-number">04</span>
+            <h2 id="experience-heading">Experience</h2>
+          </header>
+          <div class="timeline" id="experience-timeline" data-experience-limit="4"></div>
+          <div class="experience-more reveal" id="experience-more" hidden>
+            <a href="experience.html" class="btn btn-outline experience-view-all">View all experience</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact -->
+      <section id="contact" class="section" aria-labelledby="contact-heading">
+        <div class="section-inner">
+          <header class="section-header reveal">
+            <span class="section-number">05</span>
+            <h2 id="contact-heading">Get In Touch</h2>
+          </header>
+          <div class="contact-grid">
+            <div class="contact-info reveal">
+              <p class="lead">
+                Have a project in mind or want to collaborate? I'd love to hear from you.
+              </p>
+              <ul class="contact-list">
+                <li>
+                  <span class="contact-label">Email</span>
+                  <a href="mailto:samfine278@gmail.com">samfine278@gmail.com</a>
+                </li>
+                <li>
+                  <span class="contact-label">Location</span>
+                  <span>Accra, Ghana — open to remote</span>
+                </li>
+                <li>
+                  <span class="contact-label">Social</span>
+                  <span>
+                    <a href="https://github.com/samuelkwartengokyere" target="_blank" rel="noopener noreferrer">GitHub</a>
+                    &nbsp;&middot;&nbsp;
+                    <a href="https://linkedin.com/in/samuel-kwarteng-okyere" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <form class="contact-form reveal" id="contact-form" novalidate>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" autocomplete="name" required />
+                <span class="form-error" id="name-error" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" autocomplete="email" required />
+                <span class="form-error" id="email-error" role="alert"></span>
+              </div>
+              <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" required></textarea>
+                <span class="form-error" id="message-error" role="alert"></span>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+              <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <div class="section-inner footer-inner">
+          <a class="logo" href="#home" aria-label="FireHub home">
+            <span class="logo-mark" aria-hidden="true"></span>
+            <span class="logo-text">FireHub</span>
+          </a>
+          <p>Designed &amp; built by Samuel. Built with HTML, CSS &amp; JavaScript.</p>
+          <p class="footer-copy">&copy; <span id="year-footer"></span> FireHub. All rights reserved.</p>
+        </div>
+      </footer>
+    </main>
+
+    <p id="site-toast" class="site-toast" role="status" aria-live="polite" hidden></p>
+
+    <script src="js/sync.js" defer></script>
+    <script src="js/analytics.js" defer></script>
+    <script src="js/content.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </body>
+</html>
