@@ -222,13 +222,49 @@
     return !!(urlInput && urlInput.value.trim());
   }
 
-  function applyFetchedFeaturedImage(imageUrl) {
-    if (!imageUrl) return;
-    pendingProjectImage = null;
-    var urlInput = document.getElementById("project-image-url");
-    if (urlInput) urlInput.value = imageUrl;
+  function applyFetchedFeaturedImage(imageUrl, storedDataUrl) {
+    if (storedDataUrl) {
+      pendingProjectImage = storedDataUrl;
+      var urlInput = document.getElementById("project-image-url");
+      if (urlInput) urlInput.value = "";
+    } else if (imageUrl) {
+      pendingProjectImage = null;
+      var urlInput = document.getElementById("project-image-url");
+      if (urlInput) urlInput.value = imageUrl;
+    } else {
+      return;
+    }
     updateProjectModalPreview();
-    setProjectImageStatus("Preview loaded from demo or source link.", "success");
+    setProjectImageStatus("Landing page preview loaded from link.", "success");
+  }
+
+  function persistFeaturedImageFromUrl(imageUrl, callback) {
+    fetch(imageUrl)
+      .then(function (res) {
+        if (!res.ok) throw new Error("image fetch failed");
+        return res.blob();
+      })
+      .then(function (blob) {
+        if (!blob.type.match(/^image\//)) {
+          callback(null, imageUrl, null);
+          return;
+        }
+        if (blob.size > MAX_PROJECT_IMAGE_BYTES) {
+          callback(null, imageUrl, null);
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = function () {
+          callback(null, imageUrl, reader.result);
+        };
+        reader.onerror = function () {
+          callback(null, imageUrl, null);
+        };
+        reader.readAsDataURL(blob);
+      })
+      .catch(function () {
+        callback(null, imageUrl, null);
+      });
   }
 
   function fetchProjectFeaturedImageUrl(targetUrl, callback) {
@@ -239,14 +275,15 @@
 
     var githubOg = getGithubRepoOgImageUrl(targetUrl);
     if (githubOg) {
-      callback(null, githubOg);
+      callback(null, githubOg, null);
       return;
     }
 
     var apiUrl =
       "https://api.microlink.io/?url=" +
       encodeURIComponent(targetUrl) +
-      "&screenshot=true&meta=false";
+      "&screenshot=true&meta=false" +
+      "&viewport.width=1280&viewport.height=720&waitForTimeout=5000";
 
     fetch(apiUrl)
       .then(function (res) {
@@ -258,7 +295,7 @@
         var image = data && data.data && data.data.image && data.data.image.url;
         var resolved = screenshot || image;
         if (data && data.status === "success" && resolved) {
-          callback(null, resolved);
+          persistFeaturedImageFromUrl(resolved, callback);
           return;
         }
         callback(new Error("no preview"));
@@ -2857,10 +2894,10 @@
     });
   }
 
-  function finishFeaturedImageFetch(err, imageUrl) {
+  function finishFeaturedImageFetch(err, imageUrl, storedDataUrl) {
     featuredImageFetchInFlight = false;
-    if (imageUrl && !projectModalHasFeaturedImage()) {
-      applyFetchedFeaturedImage(imageUrl);
+    if ((imageUrl || storedDataUrl) && !projectModalHasFeaturedImage()) {
+      applyFetchedFeaturedImage(imageUrl, storedDataUrl);
     } else if (err && !projectModalHasFeaturedImage()) {
       setProjectImageStatus("Could not fetch preview — paste a URL or upload an image.", "error");
     }
@@ -2881,7 +2918,7 @@
     if (!targetUrl) return;
 
     featuredImageFetchInFlight = true;
-    setProjectImageStatus("Fetching preview from link…", "");
+    setProjectImageStatus("Capturing landing page preview…", "");
 
     fetchFeaturedImageFromProjectLinks(demoUrl, sourceUrl, finishFeaturedImageFetch);
   }
@@ -2980,16 +3017,17 @@
 
       if (featuredImageFetchInFlight) {
         pendingProjectSaveAfterFetch = true;
-        setProjectImageStatus("Fetching preview — saving when ready…", "");
+        setProjectImageStatus("Capturing landing page preview — saving when ready…", "");
         return;
       }
 
       featuredImageFetchInFlight = true;
-      setProjectImageStatus("Fetching preview from link…", "");
+      setProjectImageStatus("Capturing landing page preview…", "");
 
-      fetchFeaturedImageFromProjectLinks(demoUrl, sourceUrl, function (err, imageUrl) {
-        if (imageUrl && !projectModalHasFeaturedImage()) applyFetchedFeaturedImage(imageUrl);
-        else if (err) {
+      fetchFeaturedImageFromProjectLinks(demoUrl, sourceUrl, function (err, imageUrl, storedDataUrl) {
+        if ((imageUrl || storedDataUrl) && !projectModalHasFeaturedImage()) {
+          applyFetchedFeaturedImage(imageUrl, storedDataUrl);
+        } else if (err) {
           setProjectImageStatus("Could not fetch preview — saving without an image.", "error");
         }
         featuredImageFetchInFlight = false;
