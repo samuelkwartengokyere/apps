@@ -5,6 +5,12 @@
   var PROJECTS_KEY = "firehub_projects";
   var EXPERIENCES_KEY = "firehub_experiences";
 
+  var DEFAULT_SOCIAL = {
+    githubUrl: "https://github.com/samuelkwartengokyere",
+    linkedinUrl: "https://linkedin.com/in/samuel-kwarteng-okyere",
+    email: "samfine278@gmail.com",
+  };
+
   function loadJson(key) {
     try {
       var raw = localStorage.getItem(key);
@@ -18,6 +24,7 @@
       window.__firehubStaticRole = false;
       applyLogoBranding({ logoText: "FireHub" });
       applyFavicon(null);
+      applySocialLinks(DEFAULT_SOCIAL);
       return;
     }
 
@@ -62,18 +69,86 @@
     applyFavicon(settings);
   }
 
+  var SOCIAL_PLATFORMS = [
+    {
+      id: "github",
+      settingKey: "githubUrl",
+      label: "GitHub",
+      external: true,
+      svg:
+        '<path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.52 2.87 8.35 6.84 9.7.5.1.68-.22.68-.48 0-.24-.01-.86-.01-1.7-2.78.62-3.37-1.36-3.37-1.36-.45-1.18-1.12-1.5-1.12-1.5-.92-.64.07-.63.07-.63 1.02.07 1.55 1.07 1.55 1.07.9 1.57 2.36 1.12 2.94.86.09-.67.35-1.12.63-1.38-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.27 2.75 1.05A9.2 9.2 0 0 1 12 6.84c.83.01 1.67.11 2.45.33 1.91-1.32 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.95-2.34 4.81-4.57 5.07.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.8 0 .27.18.59.69.49A10.03 10.03 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/>',
+    },
+    {
+      id: "linkedin",
+      settingKey: "linkedinUrl",
+      label: "LinkedIn",
+      external: true,
+      svg:
+        '<path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.95v5.66H9.34V9h3.42v1.56h.05c.47-.9 1.63-1.85 3.36-1.85 3.6 0 4.26 2.37 4.26 5.45v6.29ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0Z"/>',
+    },
+    {
+      id: "email",
+      settingKey: "email",
+      label: "Email",
+      external: false,
+      svg:
+        '<path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2Zm0 4-8 5-8-5V6l8 5 8-5v2Z"/>',
+    },
+  ];
+
+  function getSocialHref(platform, value) {
+    if (platform.id === "email") return "mailto:" + value;
+    return value;
+  }
+
+  function buildSocialIconLink(platform, href) {
+    var link = document.createElement("a");
+    link.href = href;
+    link.className = "social-icon social-icon--" + platform.id;
+    link.setAttribute("aria-label", platform.label);
+    if (platform.external) {
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+    }
+    link.innerHTML =
+      '<svg viewBox="0 0 24 24" aria-hidden="true">' + platform.svg + "</svg>";
+    return link;
+  }
+
+  function renderSocialIcons(container, settings) {
+    if (!container || !settings) return 0;
+
+    container.innerHTML = "";
+    var count = 0;
+
+    SOCIAL_PLATFORMS.forEach(function (platform) {
+      var value = settings[platform.settingKey];
+      if (!value || !String(value).trim()) return;
+      value = String(value).trim();
+      container.appendChild(buildSocialIconLink(platform, getSocialHref(platform, value)));
+      count += 1;
+    });
+
+    return count;
+  }
+
   function applySocialLinks(settings) {
     if (!settings) return;
-    document.querySelectorAll(".social-links a").forEach(function (link) {
-      var label = link.getAttribute("aria-label");
-      if (label === "GitHub" && settings.githubUrl) {
-        link.href = settings.githubUrl;
-      } else if (label === "LinkedIn" && settings.linkedinUrl) {
-        link.href = settings.linkedinUrl;
-      } else if (label === "Email" && settings.email) {
-        link.href = "mailto:" + settings.email;
-      }
+
+    var totalIcons = 0;
+
+    document.querySelectorAll(".social-links").forEach(function (container) {
+      totalIcons = Math.max(totalIcons, renderSocialIcons(container, settings));
     });
+
+    document.querySelectorAll(".contact-social-icons").forEach(function (container) {
+      totalIcons = Math.max(totalIcons, renderSocialIcons(container, settings));
+    });
+
+    var contactSocialItem = document.getElementById("contact-social-item");
+    if (contactSocialItem) {
+      contactSocialItem.hidden = totalIcons === 0;
+    }
   }
 
   var DEFAULT_FAVICON = "assets/favicon.svg";
