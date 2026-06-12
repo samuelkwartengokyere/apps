@@ -9,7 +9,41 @@
     messages: "firehub_messages",
     email: "firehub_admin_email",
     password: "firehub_admin_password",
+    adminPanel: "firehub_admin_panel",
+    adminSettingsTab: "firehub_admin_settings_tab",
+    adminMessageFilter: "firehub_admin_message_filter",
   };
+
+  var ADMIN_PANELS = ["dashboard", "content", "projects", "experience", "messages", "settings"];
+  var ADMIN_SETTINGS_TABS = ["overview", "logo", "login", "social", "backup"];
+  var ADMIN_MESSAGE_FILTERS = ["all", "today", "unread", "read"];
+
+  function saveAdminPanel(panelId) {
+    sessionStorage.setItem(STORAGE.adminPanel, panelId);
+  }
+
+  function getSavedAdminPanel() {
+    var panelId = sessionStorage.getItem(STORAGE.adminPanel);
+    return ADMIN_PANELS.indexOf(panelId) !== -1 ? panelId : "dashboard";
+  }
+
+  function saveAdminSettingsTab(tabId) {
+    sessionStorage.setItem(STORAGE.adminSettingsTab, tabId);
+  }
+
+  function getSavedAdminSettingsTab() {
+    var tabId = sessionStorage.getItem(STORAGE.adminSettingsTab);
+    return ADMIN_SETTINGS_TABS.indexOf(tabId) !== -1 ? tabId : "overview";
+  }
+
+  function saveAdminMessageFilter(filter) {
+    sessionStorage.setItem(STORAGE.adminMessageFilter, filter);
+  }
+
+  function getSavedAdminMessageFilter() {
+    var filter = sessionStorage.getItem(STORAGE.adminMessageFilter);
+    return ADMIN_MESSAGE_FILTERS.indexOf(filter) !== -1 ? filter : "all";
+  }
 
   var DEFAULT_LOGIN = "samfine278@gmail.com";
 
@@ -395,6 +429,9 @@
     loadLogoForm();
     loadSocialLinksForm();
     updateSettingsPanel();
+    settingsTab = getSavedAdminSettingsTab();
+    messageFilter = getSavedAdminMessageFilter();
+    switchPanel(getSavedAdminPanel());
   }
 
   function showLogin() {
@@ -756,6 +793,9 @@
   }
 
   function switchPanel(panelId) {
+    if (ADMIN_PANELS.indexOf(panelId) === -1) panelId = "dashboard";
+    saveAdminPanel(panelId);
+
     navLinks.forEach(function (link) {
       link.classList.toggle("active", link.dataset.panel === panelId);
     });
@@ -866,8 +906,9 @@
   }
 
   function switchSettingsTab(tabId) {
-    if (!tabId || tabId === settingsTab) return;
+    if (!tabId || ADMIN_SETTINGS_TABS.indexOf(tabId) === -1 || tabId === settingsTab) return;
     settingsTab = tabId;
+    saveAdminSettingsTab(tabId);
     updateSettingsTabsUI();
 
     var panel = document.getElementById("panel-settings");
@@ -3304,6 +3345,7 @@
       var next = btn.getAttribute("data-msg-filter");
       if (!next || next === messageFilter) return;
       messageFilter = next;
+      saveAdminMessageFilter(next);
       renderMessages();
     });
   });
