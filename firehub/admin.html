@@ -1220,23 +1220,19 @@
                   </span>
                   <div>
                     <h4>Social links</h4>
-                    <p>Brand-colored icons appear in the sidebar and the contact section for each link you add.</p>
+                    <p>Choose a platform, paste your profile URL, and add as many networks as you need.</p>
                   </div>
                 </div>
                 <form id="social-links-form" class="stg-form">
-                  <div class="form-group stg-field">
-                    <label for="setting-githubUrl">GitHub profile URL</label>
-                    <input type="url" id="setting-githubUrl" placeholder="https://github.com/yourusername" />
-                  </div>
-                  <div class="form-group stg-field">
-                    <label for="setting-linkedinUrl">LinkedIn profile URL</label>
-                    <input type="url" id="setting-linkedinUrl" placeholder="https://linkedin.com/in/your-profile" />
-                  </div>
-                  <div class="form-group stg-field">
-                    <label for="setting-socialEmail">Email</label>
-                    <input type="email" id="setting-socialEmail" placeholder="hello@yourdomain.dev" />
-                    <p class="stg-logo-hint">Used for the mail icon in the sidebar and contact links across the site.</p>
-                  </div>
+                  <p class="stg-logo-hint">Add any platform you use. Brand-colored icons appear in the sidebar and contact section.</p>
+                  <div id="social-links-list" class="stg-social-list" aria-live="polite"></div>
+                  <button type="button" class="btn btn-outline btn-sm stg-social-add-btn" id="add-social-link-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Add social link
+                  </button>
                   <button type="submit" class="btn btn-primary stg-submit-btn">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                       <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
@@ -1526,6 +1522,7 @@
     <p id="admin-toast" class="admin-toast" role="status" aria-live="polite"></p>
 
     <script src="js/sync.js" defer></script>
+    <script src="js/social.js" defer></script>
     <script src="js/messages.js" defer></script>
     <script src="js/analytics.js" defer></script>
     <script src="js/admin.js" defer></script>

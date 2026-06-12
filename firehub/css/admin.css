@@ -3897,6 +3897,74 @@ body.admin-body .main {
   background: linear-gradient(180deg, rgba(192, 132, 252, 0.04), var(--color-surface));
 }
 
+.stg-social-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.stg-social-row {
+  display: grid;
+  grid-template-columns: minmax(9rem, 11rem) 1fr auto;
+  gap: 0.65rem;
+  align-items: center;
+}
+
+.stg-social-platform,
+.stg-social-url {
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.75rem;
+  font: inherit;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.stg-social-platform:focus-visible,
+.stg-social-url:focus-visible {
+  outline: none;
+  border-color: rgba(192, 132, 252, 0.55);
+  box-shadow: 0 0 0 3px rgba(192, 132, 252, 0.15);
+}
+
+.stg-social-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  font-size: 1.35rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.stg-social-remove:hover {
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.35);
+  background: rgba(248, 113, 113, 0.08);
+}
+
+.stg-social-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 1.25rem;
+}
+
+.stg-social-add-btn svg {
+  width: 1rem;
+  height: 1rem;
+}
+
 .stg-card--backup {
   border-color: rgba(56, 189, 248, 0.2);
   background: linear-gradient(180deg, rgba(56, 189, 248, 0.04), var(--color-surface));
@@ -4090,6 +4158,25 @@ body.admin-body .main {
 
   .stg-card {
     padding: 1.25rem;
+  }
+
+  .stg-social-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "platform remove"
+      "url url";
+  }
+
+  .stg-social-platform {
+    grid-area: platform;
+  }
+
+  .stg-social-url {
+    grid-area: url;
+  }
+
+  .stg-social-remove {
+    grid-area: remove;
   }
 }
 

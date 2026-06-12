@@ -39,6 +39,11 @@
     email: "samfine278@gmail.com",
     githubUrl: "https://github.com/samuelkwartengokyere",
     linkedinUrl: "https://linkedin.com/in/samuel-kwarteng-okyere",
+    socialLinks: [
+      { platform: "github", url: "https://github.com/samuelkwartengokyere" },
+      { platform: "linkedin", url: "https://linkedin.com/in/samuel-kwarteng-okyere" },
+      { platform: "email", url: "samfine278@gmail.com" },
+    ],
     statProjects: "4+",
     statYears: "3+",
     statPassion: "100%",
@@ -632,6 +637,7 @@
     data.faviconData = existing.faviconData || "";
     data.githubUrl = existing.githubUrl || "";
     data.linkedinUrl = existing.linkedinUrl || "";
+    data.socialLinks = existing.socialLinks || [];
     return data;
   }
 
@@ -1642,25 +1648,130 @@
     if (faviconClearBtn) faviconClearBtn.hidden = !hasCustomFavicon(s, faviconUrlInput);
   }
 
+  function getUsedSocialPlatforms() {
+    var used = {};
+    document.querySelectorAll(".stg-social-platform").forEach(function (select) {
+      used[select.value] = true;
+    });
+    return used;
+  }
+
+  function getNextSocialPlatform() {
+    if (typeof FirehubSocial === "undefined") return "github";
+    var used = getUsedSocialPlatforms();
+    for (var i = 0; i < FirehubSocial.PLATFORMS.length; i++) {
+      if (!used[FirehubSocial.PLATFORMS[i].id]) return FirehubSocial.PLATFORMS[i].id;
+    }
+    return FirehubSocial.PLATFORMS[0].id;
+  }
+
+  function updateSocialUrlField(select, input) {
+    if (!select || !input || typeof FirehubSocial === "undefined") return;
+    var platform = FirehubSocial.getPlatform(select.value);
+    if (!platform) return;
+    input.type = platform.id === "email" ? "email" : "url";
+    input.placeholder = platform.placeholder;
+  }
+
+  function addSocialLinkRow(platform, url) {
+    var list = document.getElementById("social-links-list");
+    if (!list || typeof FirehubSocial === "undefined") return;
+
+    var row = document.createElement("div");
+    row.className = "stg-social-row";
+    row.setAttribute("data-social-row", "");
+
+    var select = document.createElement("select");
+    select.className = "stg-social-platform";
+    select.setAttribute("aria-label", "Social platform");
+
+    FirehubSocial.PLATFORMS.forEach(function (item) {
+      var option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item.label;
+      if (item.id === platform) option.selected = true;
+      select.appendChild(option);
+    });
+
+    var input = document.createElement("input");
+    input.className = "stg-social-url";
+    input.value = url || "";
+    input.setAttribute("aria-label", "Profile URL");
+    updateSocialUrlField(select, input);
+
+    select.addEventListener("change", function () {
+      updateSocialUrlField(select, input);
+    });
+
+    var removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "stg-social-remove";
+    removeBtn.setAttribute("aria-label", "Remove social link");
+    removeBtn.textContent = "×";
+    removeBtn.addEventListener("click", function () {
+      if (list.querySelectorAll("[data-social-row]").length > 1) {
+        row.remove();
+      } else {
+        select.value = "github";
+        input.value = "";
+        updateSocialUrlField(select, input);
+      }
+    });
+
+    row.appendChild(select);
+    row.appendChild(input);
+    row.appendChild(removeBtn);
+    list.appendChild(row);
+  }
+
+  function renderSocialLinksForm(links) {
+    var list = document.getElementById("social-links-list");
+    if (!list || typeof FirehubSocial === "undefined") return;
+
+    list.innerHTML = "";
+    if (!links || !links.length) {
+      FirehubSocial.DEFAULT_LINKS.forEach(function (link) {
+        addSocialLinkRow(link.platform, link.url);
+      });
+      return;
+    }
+
+    links.forEach(function (link) {
+      addSocialLinkRow(link.platform, link.url);
+    });
+  }
+
   function loadSocialLinksForm() {
-    var s = getSettings();
-    var githubInput = document.getElementById("setting-githubUrl");
-    var linkedinInput = document.getElementById("setting-linkedinUrl");
-    var emailInput = document.getElementById("setting-socialEmail");
-    if (githubInput) githubInput.value = s.githubUrl || "";
-    if (linkedinInput) linkedinInput.value = s.linkedinUrl || "";
-    if (emailInput) emailInput.value = s.email || "";
+    if (typeof FirehubSocial === "undefined") return;
+    renderSocialLinksForm(FirehubSocial.getSocialLinks(getSettings()));
   }
 
   function collectSocialLinksFormData() {
     var existing = getSettings();
-    var githubInput = document.getElementById("setting-githubUrl");
-    var linkedinInput = document.getElementById("setting-linkedinUrl");
-    var emailInput = document.getElementById("setting-socialEmail");
-    return Object.assign({}, existing, {
-      githubUrl: githubInput ? githubInput.value.trim() : "",
-      linkedinUrl: linkedinInput ? linkedinInput.value.trim() : "",
-      email: emailInput ? emailInput.value.trim() : existing.email || "",
+    var rows = document.querySelectorAll("[data-social-row]");
+    var socialLinks = [];
+    var seen = {};
+
+    rows.forEach(function (row) {
+      var select = row.querySelector(".stg-social-platform");
+      var input = row.querySelector(".stg-social-url");
+      if (!select || !input) return;
+
+      var platform = select.value;
+      var url = input.value.trim();
+      if (!platform || !url || seen[platform]) return;
+
+      seen[platform] = true;
+      socialLinks.push({ platform: platform, url: url });
+    });
+
+    var legacy = typeof FirehubSocial !== "undefined"
+      ? FirehubSocial.syncLegacyFields(socialLinks)
+      : { githubUrl: "", linkedinUrl: "", email: existing.email || "" };
+
+    return Object.assign({}, existing, legacy, {
+      socialLinks: socialLinks,
+      email: legacy.email || existing.email || "",
     });
   }
 
@@ -2777,6 +2888,13 @@
     faviconImageUrl.addEventListener("input", function () {
       if (faviconImageUrl.value.trim()) pendingFaviconImage = null;
       updateLogoPreview();
+    });
+  }
+
+  var addSocialLinkBtn = document.getElementById("add-social-link-btn");
+  if (addSocialLinkBtn) {
+    addSocialLinkBtn.addEventListener("click", function () {
+      addSocialLinkRow(getNextSocialPlatform(), "");
     });
   }
 
