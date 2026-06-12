@@ -169,6 +169,114 @@
     return projectLinkUrl(p.demoUrl) || projectLinkUrl(p.sourceUrl);
   }
 
+  function normalizeExternalUrl(url) {
+    var u = projectLinkUrl(url);
+    if (!u) return "";
+    if (/^\/\//.test(u)) return "https:" + u;
+    if (/^https?:\/\//i.test(u)) return u;
+    if (/^[a-z][a-z0-9+.-]*:\/\//i.test(u)) return "";
+    if (/^(localhost|\d{1,3}(\.\d{1,3}){3})(:\d+)?(\/|$)/i.test(u)) {
+      return "http://" + u;
+    }
+    if (/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+\.?(\/|$|:|\?|#)/i.test(u)) {
+      return "https://" + u;
+    }
+    return "";
+  }
+
+  function getGithubRepoOgImageUrl(url) {
+    var u = normalizeExternalUrl(url);
+    if (!u) return null;
+    var m = u.match(/^https?:\/\/github\.com\/([^/?#]+)\/([^/?#]+)/i);
+    if (!m) return null;
+    var owner = m[1];
+    var repo = m[2].replace(/\.git$/i, "");
+    var reserved = {
+      features: 1,
+      login: 1,
+      signup: 1,
+      settings: 1,
+      marketplace: 1,
+      topics: 1,
+      collections: 1,
+      events: 1,
+      sponsors: 1,
+      organizations: 1,
+    };
+    if (reserved[owner.toLowerCase()]) return null;
+    return (
+      "https://opengraph.githubassets.com/" +
+      encodeURIComponent(owner) +
+      "/" +
+      encodeURIComponent(repo)
+    );
+  }
+
+  function getProjectFeaturedImageTargetUrl(demoUrl, sourceUrl) {
+    return normalizeExternalUrl(demoUrl) || normalizeExternalUrl(sourceUrl);
+  }
+
+  function projectModalHasFeaturedImage() {
+    if (pendingProjectImage) return true;
+    var urlInput = document.getElementById("project-image-url");
+    return !!(urlInput && urlInput.value.trim());
+  }
+
+  function applyFetchedFeaturedImage(imageUrl) {
+    if (!imageUrl) return;
+    pendingProjectImage = null;
+    var urlInput = document.getElementById("project-image-url");
+    if (urlInput) urlInput.value = imageUrl;
+    updateProjectModalPreview();
+    setProjectImageStatus("Preview loaded from demo or source link.", "success");
+  }
+
+  function fetchProjectFeaturedImageUrl(targetUrl, callback) {
+    if (!targetUrl) {
+      callback(new Error("no url"));
+      return;
+    }
+
+    var githubOg = getGithubRepoOgImageUrl(targetUrl);
+    if (githubOg) {
+      callback(null, githubOg);
+      return;
+    }
+
+    var apiUrl =
+      "https://api.microlink.io/?url=" +
+      encodeURIComponent(targetUrl) +
+      "&screenshot=true&meta=false";
+
+    fetch(apiUrl)
+      .then(function (res) {
+        return res.json();
+      })
+      .then(function (data) {
+        var screenshot =
+          data && data.data && data.data.screenshot && data.data.screenshot.url;
+        var image = data && data.data && data.data.image && data.data.image.url;
+        var resolved = screenshot || image;
+        if (data && data.status === "success" && resolved) {
+          callback(null, resolved);
+          return;
+        }
+        callback(new Error("no preview"));
+      })
+      .catch(function (err) {
+        callback(err || new Error("fetch failed"));
+      });
+  }
+
+  function fetchFeaturedImageFromProjectLinks(demoUrl, sourceUrl, callback) {
+    var targetUrl = getProjectFeaturedImageTargetUrl(demoUrl, sourceUrl);
+    if (!targetUrl) {
+      callback(new Error("no link"));
+      return;
+    }
+    fetchProjectFeaturedImageUrl(targetUrl, callback);
+  }
+
   function buildProjectLinksHtml(p, opts) {
     opts = opts || {};
     var wrapClass = opts.wrapClass || "pj-card-links";
@@ -561,6 +669,9 @@
   var MAX_EXPERIENCE_IMAGE_BYTES = 900000;
   var pendingProjectImage = null;
   var pendingExperienceImage = null;
+  var featuredImageFetchTimer = null;
+  var featuredImageFetchInFlight = false;
+  var pendingProjectSaveAfterFetch = false;
 
   function getEntryImageSrc(entry) {
     if (!entry) return null;
@@ -2137,6 +2248,10 @@
     var modal = document.getElementById("project-modal");
     if (modal) modal.hidden = true;
     document.body.style.overflow = "";
+    clearTimeout(featuredImageFetchTimer);
+    featuredImageFetchTimer = null;
+    featuredImageFetchInFlight = false;
+    pendingProjectSaveAfterFetch = false;
   }
 
   function deleteProject(id) {
@@ -2742,6 +2857,47 @@
     });
   }
 
+  function finishFeaturedImageFetch(err, imageUrl) {
+    featuredImageFetchInFlight = false;
+    if (imageUrl && !projectModalHasFeaturedImage()) {
+      applyFetchedFeaturedImage(imageUrl);
+    } else if (err && !projectModalHasFeaturedImage()) {
+      setProjectImageStatus("Could not fetch preview — paste a URL or upload an image.", "error");
+    }
+    if (pendingProjectSaveAfterFetch) {
+      pendingProjectSaveAfterFetch = false;
+      saveProjectFromForm();
+    }
+  }
+
+  function tryAutoFetchFeaturedImage() {
+    if (projectModalHasFeaturedImage() || featuredImageFetchInFlight) return;
+
+    var demoInput = document.getElementById("project-demo");
+    var sourceInput = document.getElementById("project-source");
+    var demoUrl = demoInput ? demoInput.value.trim() : "";
+    var sourceUrl = sourceInput ? sourceInput.value.trim() : "";
+    var targetUrl = getProjectFeaturedImageTargetUrl(demoUrl, sourceUrl);
+    if (!targetUrl) return;
+
+    featuredImageFetchInFlight = true;
+    setProjectImageStatus("Fetching preview from link…", "");
+
+    fetchFeaturedImageFromProjectLinks(demoUrl, sourceUrl, finishFeaturedImageFetch);
+  }
+
+  function scheduleFeaturedImageFetch() {
+    clearTimeout(featuredImageFetchTimer);
+    featuredImageFetchTimer = setTimeout(tryAutoFetchFeaturedImage, 900);
+  }
+
+  ["project-demo", "project-source"].forEach(function (inputId) {
+    var input = document.getElementById(inputId);
+    if (!input) return;
+    input.addEventListener("input", scheduleFeaturedImageFetch);
+    input.addEventListener("blur", tryAutoFetchFeaturedImage);
+  });
+
   if (projectForm) {
     projectForm.addEventListener("input", updateProjectModalPreview);
 
@@ -2755,55 +2911,90 @@
     }
   }
 
+  function saveProjectFromForm() {
+    var id = document.getElementById("project-id").value;
+    var techRaw = document.getElementById("project-tech").value;
+    var imageUrl = projectImageUrl ? projectImageUrl.value.trim() : "";
+    var project = {
+      id: id || generateId(),
+      title: document.getElementById("project-title").value.trim(),
+      tag: document.getElementById("project-tag").value.trim(),
+      description: document.getElementById("project-description").value.trim(),
+      tech: techRaw
+        .split(",")
+        .map(function (t) {
+          return t.trim();
+        })
+        .filter(Boolean),
+      demoUrl: document.getElementById("project-demo").value.trim(),
+      sourceUrl: document.getElementById("project-source").value.trim(),
+      imageClass:
+        document.getElementById("project-image").value.trim() || "project-image--none",
+      progress: normalizeProgress(
+        document.getElementById("project-progress").value || "done"
+      ),
+      imageUrl: imageUrl,
+      imageData: pendingProjectImage,
+    };
+
+    if (project.imageData) project.imageUrl = "";
+
+    if (!project.title) return;
+
+    var list = getProjects();
+    var idx = list.findIndex(function (p) {
+      return p.id === project.id;
+    });
+    if (idx >= 0) list[idx] = project;
+    else list.push(project);
+
+    try {
+      saveProjects(list);
+    } catch (err) {
+      showToast("Could not save — image may be too large. Try a URL instead.");
+      return;
+    }
+    closeProjectModal();
+    renderProjects();
+    refreshDashboard(true);
+    showToast("Project saved.");
+  }
+
   if (projectForm) {
     projectForm.addEventListener("submit", function (e) {
       e.preventDefault();
-      var id = document.getElementById("project-id").value;
-      var techRaw = document.getElementById("project-tech").value;
-      var imageUrl = projectImageUrl ? projectImageUrl.value.trim() : "";
-      var project = {
-        id: id || generateId(),
-        title: document.getElementById("project-title").value.trim(),
-        tag: document.getElementById("project-tag").value.trim(),
-        description: document.getElementById("project-description").value.trim(),
-        tech: techRaw
-          .split(",")
-          .map(function (t) {
-            return t.trim();
-          })
-          .filter(Boolean),
-        demoUrl: document.getElementById("project-demo").value.trim(),
-        sourceUrl: document.getElementById("project-source").value.trim(),
-        imageClass:
-          document.getElementById("project-image").value.trim() || "project-image--none",
-        progress: normalizeProgress(
-          document.getElementById("project-progress").value || "done"
-        ),
-        imageUrl: imageUrl,
-        imageData: pendingProjectImage,
-      };
 
-      if (project.imageData) project.imageUrl = "";
+      if (!document.getElementById("project-title").value.trim()) return;
 
-      if (!project.title) return;
-
-      var list = getProjects();
-      var idx = list.findIndex(function (p) {
-        return p.id === project.id;
-      });
-      if (idx >= 0) list[idx] = project;
-      else list.push(project);
-
-      try {
-        saveProjects(list);
-      } catch (err) {
-        showToast("Could not save — image may be too large. Try a URL instead.");
+      if (projectModalHasFeaturedImage()) {
+        saveProjectFromForm();
         return;
       }
-      closeProjectModal();
-      renderProjects();
-      refreshDashboard(true);
-      showToast("Project saved.");
+
+      var demoUrl = document.getElementById("project-demo").value.trim();
+      var sourceUrl = document.getElementById("project-source").value.trim();
+      if (!getProjectFeaturedImageTargetUrl(demoUrl, sourceUrl)) {
+        saveProjectFromForm();
+        return;
+      }
+
+      if (featuredImageFetchInFlight) {
+        pendingProjectSaveAfterFetch = true;
+        setProjectImageStatus("Fetching preview — saving when ready…", "");
+        return;
+      }
+
+      featuredImageFetchInFlight = true;
+      setProjectImageStatus("Fetching preview from link…", "");
+
+      fetchFeaturedImageFromProjectLinks(demoUrl, sourceUrl, function (err, imageUrl) {
+        if (imageUrl && !projectModalHasFeaturedImage()) applyFetchedFeaturedImage(imageUrl);
+        else if (err) {
+          setProjectImageStatus("Could not fetch preview — saving without an image.", "error");
+        }
+        featuredImageFetchInFlight = false;
+        saveProjectFromForm();
+      });
     });
   }
 
