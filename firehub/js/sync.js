@@ -6,6 +6,7 @@
     settings: "firehub_settings",
     projects: "firehub_projects",
     experiences: "firehub_experiences",
+    messages: "firehub_messages",
   };
 
   var channel =
@@ -34,6 +35,8 @@
         callback("projects", e.newValue, null);
       } else if (e.key === KEYS.experiences) {
         callback("experiences", e.newValue, null);
+      } else if (e.key === KEYS.messages) {
+        callback("messages", e.newValue, null);
       }
     });
 

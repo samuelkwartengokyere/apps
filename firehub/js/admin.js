@@ -690,6 +690,9 @@
   }
 
   function getMessages() {
+    if (typeof FirehubMessages !== "undefined") {
+      return FirehubMessages.getMessages();
+    }
     try {
       var raw = localStorage.getItem(STORAGE.messages);
       if (raw) return JSON.parse(raw);
@@ -698,7 +701,12 @@
   }
 
   function saveMessages(list) {
+    if (typeof FirehubMessages !== "undefined") {
+      FirehubMessages.saveMessages(list);
+      return;
+    }
     localStorage.setItem(STORAGE.messages, JSON.stringify(list));
+    notifySite("messages");
   }
 
   var DASH_RING_LENGTH = 327;
@@ -771,8 +779,10 @@
       animateExperiencesPanel();
     }
     if (panelId === "messages") {
-      renderMessages();
-      animateMessagesPanel();
+      refreshMessagesFromRemote(function () {
+        renderMessages();
+        animateMessagesPanel();
+      });
       scheduleTodayFilterRefresh();
     } else if (todayFilterMidnightTimer) {
       clearTimeout(todayFilterMidnightTimer);
@@ -1652,6 +1662,21 @@
     applyFavicon(s);
   }
 
+  function refreshMessagesFromRemote(done) {
+    if (typeof FirehubMessages !== "undefined" && typeof FirehubMessages.pullRemote === "function") {
+      FirehubMessages.pullRemote().then(function () {
+        if (typeof done === "function") done();
+      });
+      return;
+    }
+    if (typeof done === "function") done();
+  }
+
+  function handleMessagesSync() {
+    renderMessages();
+    refreshDashboard(true);
+  }
+
   function renderMessages() {
     var list = document.getElementById("messages-list");
     var empty = document.getElementById("messages-empty");
@@ -2322,9 +2347,16 @@
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
   }
 
+  if (typeof FirehubSync !== "undefined") {
+    FirehubSync.onSync(function (type) {
+      if (type === "messages") handleMessagesSync();
+    });
+  }
+
   /* Init */
   if (isAuthenticated()) {
     showShell();
+    refreshMessagesFromRemote(handleMessagesSync);
   } else {
     showLogin();
     var savedBrand = getSettings();
@@ -2357,6 +2389,7 @@
       if (email === getLoginEmail() && password === getLoginPassword()) {
         sessionStorage.setItem(STORAGE.auth, "1");
         showShell();
+        refreshMessagesFromRemote(handleMessagesSync);
         showToast("Welcome back.");
       } else {
         if (error) error.textContent = "Incorrect email or password.";

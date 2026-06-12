@@ -266,34 +266,49 @@
 
       if (!valid) return;
 
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      const name = nameInput.value.trim();
+      const email = emailInput.value.trim();
+      const message = messageInput.value.trim();
+
+      function onSent() {
+        formStatus.textContent = "Thanks! Your message was sent — we'll get back to you soon.";
+        formStatus.classList.add("is-success");
+        contactForm.reset();
+        if (submitBtn) submitBtn.disabled = false;
+      }
+
+      function onFailed() {
+        formStatus.textContent = "Could not send your message. Please try again or email us directly.";
+        formStatus.classList.add("is-error");
+        if (submitBtn) submitBtn.disabled = false;
+      }
+
+      if (typeof FirehubMessages !== "undefined") {
+        FirehubMessages.submitContact(name, email, message).then(onSent).catch(onFailed);
+        return;
+      }
+
       try {
         const messages = JSON.parse(localStorage.getItem("firehub_messages") || "[]");
         messages.push({
           id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
-          name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          message: messageInput.value.trim(),
+          name: name,
+          email: email,
+          message: message,
           date: new Date().toISOString(),
           read: false,
         });
         localStorage.setItem("firehub_messages", JSON.stringify(messages));
+        if (typeof FirehubSync !== "undefined") {
+          FirehubSync.broadcast("messages");
+        }
+        onSent();
       } catch (err) {
-        /* localStorage unavailable */
+        onFailed();
       }
-
-      const subject = encodeURIComponent("FireHub — New contact from " + nameInput.value.trim());
-      const body = encodeURIComponent(
-        "Name: " + nameInput.value.trim() +
-        "\nEmail: " + emailInput.value.trim() +
-        "\n\n" + messageInput.value.trim()
-      );
-
-      window.location.href = "mailto:samfine278@gmail.com?subject=" + subject + "&body=" + body;
-
-      formStatus.textContent = "Opening your email client…";
-      formStatus.classList.add("is-success");
-
-      contactForm.reset();
     });
   }
 })();
