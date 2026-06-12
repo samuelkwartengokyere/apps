@@ -37,6 +37,8 @@
     aboutPhotoData: "",
     aboutCtaText: "Let's Talk",
     email: "samfine278@gmail.com",
+    githubUrl: "https://github.com/samuelkwartengokyere",
+    linkedinUrl: "https://linkedin.com/in/samuel-kwarteng-okyere",
     statProjects: "4+",
     statYears: "3+",
     statPassion: "100%",
@@ -386,6 +388,7 @@
     renderExperiences();
     loadSettingsForm();
     loadLogoForm();
+    loadSocialLinksForm();
     updateSettingsPanel();
   }
 
@@ -627,6 +630,8 @@
     data.logoData = existing.logoData || "";
     data.faviconUrl = existing.faviconUrl || "";
     data.faviconData = existing.faviconData || "";
+    data.githubUrl = existing.githubUrl || "";
+    data.linkedinUrl = existing.linkedinUrl || "";
     return data;
   }
 
@@ -790,6 +795,7 @@
     }
     if (panelId === "settings") {
       loadLogoForm();
+      loadSocialLinksForm();
       updateSettingsPanel();
       animateSettingsPanel();
     }
@@ -1634,6 +1640,28 @@
 
     var faviconClearBtn = document.getElementById("favicon-image-clear-btn");
     if (faviconClearBtn) faviconClearBtn.hidden = !hasCustomFavicon(s, faviconUrlInput);
+  }
+
+  function loadSocialLinksForm() {
+    var s = getSettings();
+    var githubInput = document.getElementById("setting-githubUrl");
+    var linkedinInput = document.getElementById("setting-linkedinUrl");
+    var emailInput = document.getElementById("setting-socialEmail");
+    if (githubInput) githubInput.value = s.githubUrl || "";
+    if (linkedinInput) linkedinInput.value = s.linkedinUrl || "";
+    if (emailInput) emailInput.value = s.email || "";
+  }
+
+  function collectSocialLinksFormData() {
+    var existing = getSettings();
+    var githubInput = document.getElementById("setting-githubUrl");
+    var linkedinInput = document.getElementById("setting-linkedinUrl");
+    var emailInput = document.getElementById("setting-socialEmail");
+    return Object.assign({}, existing, {
+      githubUrl: githubInput ? githubInput.value.trim() : "",
+      linkedinUrl: linkedinInput ? linkedinInput.value.trim() : "",
+      email: emailInput ? emailInput.value.trim() : existing.email || "",
+    });
   }
 
   function loadLogoForm() {
@@ -2749,6 +2777,16 @@
     faviconImageUrl.addEventListener("input", function () {
       if (faviconImageUrl.value.trim()) pendingFaviconImage = null;
       updateLogoPreview();
+    });
+  }
+
+  var socialLinksForm = document.getElementById("social-links-form");
+  if (socialLinksForm) {
+    socialLinksForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      saveSettings(collectSocialLinksFormData());
+      loadSocialLinksForm();
+      showToast("Social links saved. Portfolio updates automatically.");
     });
   }
 

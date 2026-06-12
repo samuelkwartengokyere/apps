@@ -57,8 +57,23 @@
       });
     }
 
+    applySocialLinks(settings);
     applyLogoBranding(settings);
     applyFavicon(settings);
+  }
+
+  function applySocialLinks(settings) {
+    if (!settings) return;
+    document.querySelectorAll(".social-links a").forEach(function (link) {
+      var label = link.getAttribute("aria-label");
+      if (label === "GitHub" && settings.githubUrl) {
+        link.href = settings.githubUrl;
+      } else if (label === "LinkedIn" && settings.linkedinUrl) {
+        link.href = settings.linkedinUrl;
+      } else if (label === "Email" && settings.email) {
+        link.href = "mailto:" + settings.email;
+      }
+    });
   }
 
   var DEFAULT_FAVICON = "assets/favicon.svg";

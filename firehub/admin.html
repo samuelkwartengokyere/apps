@@ -998,6 +998,21 @@
               <button
                 type="button"
                 class="stg-tab"
+                data-stg-tab="social"
+                role="tab"
+                aria-selected="false"
+                aria-controls="stg-panel-social"
+                id="stg-tab-social"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                </svg>
+                Social links
+              </button>
+              <button
+                type="button"
+                class="stg-tab"
                 data-stg-tab="backup"
                 role="tab"
                 aria-selected="false"
@@ -1059,7 +1074,7 @@
                     </div>
                   </article>
                 </div>
-                <p class="stg-tab-hint">Use the tabs above to change your logo, update login credentials, or export a backup.</p>
+                <p class="stg-tab-hint">Use the tabs above to change your logo, social links, login credentials, or export a backup.</p>
               </div>
 
               <div
@@ -1182,6 +1197,53 @@
                       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                     </svg>
                     Update login
+                  </button>
+                </form>
+              </article>
+              </div>
+
+              <div
+                id="stg-panel-social"
+                class="stg-tab-panel stg-animate"
+                style="--stg-i: 2"
+                role="tabpanel"
+                aria-labelledby="stg-tab-social"
+                hidden
+              >
+              <article class="stg-card stg-card--social">
+                <div class="stg-card-head">
+                  <span class="stg-card-icon stg-card-icon--social" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                  </span>
+                  <div>
+                    <h4>Social links</h4>
+                    <p>GitHub, LinkedIn, and email icons shown in the portfolio sidebar on every page.</p>
+                  </div>
+                </div>
+                <form id="social-links-form" class="stg-form">
+                  <div class="form-group stg-field">
+                    <label for="setting-githubUrl">GitHub profile URL</label>
+                    <input type="url" id="setting-githubUrl" placeholder="https://github.com/yourusername" />
+                  </div>
+                  <div class="form-group stg-field">
+                    <label for="setting-linkedinUrl">LinkedIn profile URL</label>
+                    <input type="url" id="setting-linkedinUrl" placeholder="https://linkedin.com/in/your-profile" />
+                  </div>
+                  <div class="form-group stg-field">
+                    <label for="setting-socialEmail">Email</label>
+                    <input type="email" id="setting-socialEmail" placeholder="hello@yourdomain.dev" />
+                    <p class="stg-logo-hint">Used for the mail icon in the sidebar and contact links across the site.</p>
+                  </div>
+                  <button type="submit" class="btn btn-primary stg-submit-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                      <polyline points="17 21 17 13 7 13 7 21" />
+                      <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    Save social links
                   </button>
                 </form>
               </article>

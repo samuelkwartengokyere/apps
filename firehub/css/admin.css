@@ -3627,6 +3627,12 @@ body.admin-body .main {
   border-color: rgba(255, 107, 43, 0.35);
 }
 
+.stg-tab.is-active[data-stg-tab="social"] {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+  border-color: rgba(192, 132, 252, 0.35);
+}
+
 .stg-tab.is-active[data-stg-tab="backup"] {
   color: #38bdf8;
   background: rgba(56, 189, 248, 0.12);
@@ -3886,6 +3892,11 @@ body.admin-body .main {
   background: linear-gradient(180deg, rgba(34, 197, 94, 0.04), var(--color-surface));
 }
 
+.stg-card--social {
+  border-color: rgba(192, 132, 252, 0.2);
+  background: linear-gradient(180deg, rgba(192, 132, 252, 0.04), var(--color-surface));
+}
+
 .stg-card--backup {
   border-color: rgba(56, 189, 248, 0.2);
   background: linear-gradient(180deg, rgba(56, 189, 248, 0.04), var(--color-surface));
@@ -3913,6 +3924,12 @@ body.admin-body .main {
 .stg-card-icon svg {
   width: 1.35rem;
   height: 1.35rem;
+}
+
+.stg-card-icon--social {
+  color: #c084fc;
+  background: rgba(192, 132, 252, 0.12);
+  border-color: rgba(192, 132, 252, 0.25);
 }
 
 .stg-card-icon--backup {
