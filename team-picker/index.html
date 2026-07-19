@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SquadForge — Random Team Generator</title>
+  <meta name="description" content="Modern random team generator. Split names into balanced groups with spin energy, labels, and export." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <div class="glow glow-a" aria-hidden="true"></div>
+  <div class="glow glow-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <p class="brand-name">SquadForge</p>
+        <p class="brand-tag">Random team generator</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn ghost" id="btnSound" aria-pressed="true" title="Toggle sound">
+        <span class="icon" data-icon="sound"></span>
+        Sound
+      </button>
+      <button type="button" class="btn ghost" id="btnFullscreen" title="Fullscreen">
+        <span class="icon" data-icon="expand"></span>
+        Focus
+      </button>
+      <button type="button" class="btn ghost" id="btnResetAll" title="Reset everything">
+        Reset
+      </button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage" aria-label="Team wheel stage">
+      <div class="stage-head">
+        <h1 id="toolTitle">Forge the squads</h1>
+        <p id="toolDesc">Drop names in, tune the rules, hit spin — balanced teams in seconds.</p>
+      </div>
+
+      <div class="wheel-wrap">
+        <canvas id="wheel" width="560" height="560" aria-label="Spinning team wheel"></canvas>
+        <div class="wheel-hub">
+          <button type="button" class="spin-btn" id="btnSpin" disabled>
+            <span class="spin-label">START</span>
+            <span class="spin-hint">Ctrl + Enter</span>
+          </button>
+        </div>
+        <div class="pointer" aria-hidden="true"></div>
+      </div>
+
+      <div class="stage-meta">
+        <div class="stat">
+          <span class="stat-value" id="statPeople">0</span>
+          <span class="stat-label">People</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statGroups">0</span>
+          <span class="stat-label">Groups</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="statPerGroup">—</span>
+          <span class="stat-label">Per group</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="panel" aria-label="Inputs and settings">
+      <div class="panel-tabs" role="tablist">
+        <button type="button" class="tab active" role="tab" aria-selected="true" data-tab="people">People</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="rules">Rules</button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-tab="teams">Teams</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-people" role="tabpanel">
+        <div class="field-row">
+          <label class="field grow">
+            <span>Add name</span>
+            <input type="text" id="nameInput" placeholder="Enter a name" autocomplete="off" />
+          </label>
+          <label class="field narrow">
+            <span>Label</span>
+            <select id="labelSelect">
+              <option value="">None</option>
+              <option value="M">M</option>
+              <option value="F">F</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+            </select>
+          </label>
+          <button type="button" class="btn primary add-btn" id="btnAdd">Add</button>
+        </div>
+
+        <label class="field">
+          <span>Paste list <em>(one name per line)</em></span>
+          <textarea id="bulkInput" rows="5" placeholder="Alex&#10;Jordan&#10;Sam&#10;Riley"></textarea>
+        </label>
+        <div class="inline-actions">
+          <button type="button" class="btn soft" id="btnImport">Import list</button>
+          <button type="button" class="btn soft" id="btnSample">Load sample</button>
+          <button type="button" class="btn soft danger" id="btnClearPeople">Clear people</button>
+        </div>
+
+        <div class="people-list" id="peopleList" aria-live="polite"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-rules" role="tabpanel" hidden>
+        <fieldset class="fieldset">
+          <legend>Distribute equally by</legend>
+          <div class="segmented" id="balanceMode">
+            <button type="button" class="seg active" data-mode="default">Default</button>
+            <button type="button" class="seg" data-mode="gender">Gender</button>
+            <button type="button" class="seg" data-mode="label">Label</button>
+          </div>
+          <p class="hint" id="balanceHint">Shuffle everyone evenly across teams.</p>
+        </fieldset>
+
+        <div class="grid-2">
+          <label class="field">
+            <span>Number of groups</span>
+            <input type="number" id="groupCount" min="1" max="100" value="2" />
+          </label>
+          <label class="field">
+            <span>Max people / group</span>
+            <input type="number" id="maxPerGroup" min="1" max="500" placeholder="Auto" />
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Pick quantity <em>(optional subset)</em></span>
+          <input type="number" id="pickQuantity" min="1" max="1000" placeholder="All people" />
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="pickReps" />
+          <span>Pick a representative from each team</span>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="showLabels" checked />
+          <span>Show labels on the results board</span>
+        </label>
+
+        <fieldset class="fieldset">
+          <legend>Constraints</legend>
+          <p class="hint">Keep people together or apart. Use exact names from your list.</p>
+          <label class="field">
+            <span>Keep together <em>(comma-separated pairs: A+B, C+D)</em></span>
+            <input type="text" id="keepTogether" placeholder="Alex+Jordan, Sam+Riley" />
+          </label>
+          <label class="field">
+            <span>Keep apart <em>(comma-separated pairs: A|B)</em></span>
+            <input type="text" id="keepApart" placeholder="Alex|Jordan" />
+          </label>
+        </fieldset>
+      </div>
+
+      <div class="tab-panel" id="tab-teams" role="tabpanel" hidden>
+        <p class="hint">Customize names before you spin. Defaults update with group count.</p>
+        <div class="team-names" id="teamNames"></div>
+        <div class="inline-actions">
+          <button type="button" class="btn soft" id="btnResetTeamNames">Reset names</button>
+        </div>
+      </div>
+
+      <div class="panel-foot">
+        <button type="button" class="btn soft" id="btnResults" disabled>Groups board</button>
+        <button type="button" class="btn soft" id="btnClearGroups" disabled>Clear groups</button>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modal" id="resultsModal" hidden>
+    <div class="modal-backdrop" data-close="results"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="resultsTitle">
+      <header class="modal-head">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h2 id="resultsTitle">Groups board</h2>
+        </div>
+        <button type="button" class="icon-btn" data-close="results" aria-label="Close">×</button>
+      </header>
+      <div class="results-grid" id="resultsGrid"></div>
+      <footer class="modal-foot">
+        <button type="button" class="btn soft" id="btnCopy">Copy</button>
+        <button type="button" class="btn soft" id="btnCsv">Download CSV</button>
+        <button type="button" class="btn soft" id="btnImage">Save image</button>
+        <button type="button" class="btn primary" id="btnRespin">Spin again</button>
+      </footer>
+    </div>
+  </div>
+
+  <canvas id="confetti" aria-hidden="true"></canvas>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
