@@ -24,13 +24,11 @@
       </div>
     </div>
     <div class="top-actions">
-      <button type="button" class="btn ghost" id="btnSound" aria-pressed="true" title="Toggle sound">
-        <span class="icon" data-icon="sound"></span>
-        Sound
+      <button type="button" class="btn ghost" id="btnSound" aria-pressed="true" title="Mute or unmute wheel spin sounds">
+        Sound on
       </button>
-      <button type="button" class="btn ghost" id="btnFullscreen" title="Fullscreen">
-        <span class="icon" data-icon="expand"></span>
-        Focus
+      <button type="button" class="btn ghost" id="btnArena" aria-pressed="false" title="Big-screen projector layout">
+        Arena
       </button>
       <button type="button" class="btn ghost" id="btnResetAll" title="Reset everything">
         Reset
@@ -45,15 +43,34 @@
         <p id="toolDesc">Drop names in, tune the rules, hit spin — balanced teams in seconds.</p>
       </div>
 
-      <div class="wheel-wrap">
-        <canvas id="wheel" width="560" height="560" aria-label="Spinning team wheel"></canvas>
-        <div class="wheel-hub">
-          <button type="button" class="spin-btn" id="btnSpin" disabled>
-            <span class="spin-label">START</span>
-            <span class="spin-hint">Ctrl + Enter</span>
-          </button>
+      <div class="stage-main">
+        <div class="wheel-wrap">
+          <canvas id="wheel" width="560" height="560" aria-label="Spinning team wheel"></canvas>
+          <div class="wheel-hub">
+            <button type="button" class="spin-btn" id="btnSpin" disabled>
+              <span class="spin-label">START</span>
+              <span class="spin-hint">Ctrl + Enter</span>
+            </button>
+          </div>
+          <div class="pointer" aria-hidden="true"></div>
         </div>
-        <div class="pointer" aria-hidden="true"></div>
+
+        <aside class="arena-board" id="arenaBoard" aria-label="Arena team board" hidden>
+          <div class="arena-board-head">
+            <div>
+              <p class="eyebrow">Live draft</p>
+              <h2>Arena board</h2>
+            </div>
+            <div class="fairness" id="arenaFairness" hidden></div>
+          </div>
+          <div class="reveal-callout" id="arenaCallout" aria-live="polite"></div>
+          <div class="arena-teams" id="arenaTeams"></div>
+          <div class="arena-actions">
+            <button type="button" class="btn soft" id="btnSkipReveal" hidden>Skip reveal</button>
+            <button type="button" class="btn soft" id="btnArenaResults" disabled>Full results</button>
+            <button type="button" class="btn ghost" id="btnExitArena">Exit arena</button>
+          </div>
+        </aside>
       </div>
 
       <div class="stage-meta">
@@ -69,6 +86,10 @@
           <span class="stat-value" id="statPerGroup">—</span>
           <span class="stat-label">Per group</span>
         </div>
+        <div class="stat fairness-stat" id="statFairnessWrap" hidden>
+          <span class="stat-value" id="statFairness">—</span>
+          <span class="stat-label">Fairness</span>
+        </div>
       </div>
     </section>
 
@@ -80,13 +101,26 @@
       </div>
 
       <div class="tab-panel active" id="tab-people" role="tabpanel">
-        <div class="field-row">
+        <fieldset class="fieldset skill-catalog-box">
+          <legend>Skill catalog</legend>
+          <p class="hint">Create skills your event cares about — Frontend, Backend, Design, or anything else.</p>
+          <div class="field-row">
+            <label class="field grow">
+              <span>New skill</span>
+              <input type="text" id="newSkillInput" placeholder="e.g. Frontend" autocomplete="off" />
+            </label>
+            <button type="button" class="btn soft add-btn" id="btnAddSkill">Add skill</button>
+          </div>
+          <div class="skill-catalog" id="skillCatalog" aria-live="polite"></div>
+        </fieldset>
+
+        <div class="add-person">
           <label class="field grow">
-            <span>Add name</span>
+            <span>Name</span>
             <input type="text" id="nameInput" placeholder="Enter a name" autocomplete="off" />
           </label>
-          <label class="field narrow">
-            <span>Label</span>
+          <label class="field">
+            <span>Label <em>(optional)</em></span>
             <select id="labelSelect">
               <option value="">None</option>
               <option value="M">M</option>
@@ -95,12 +129,17 @@
               <option value="B">B</option>
             </select>
           </label>
-          <button type="button" class="btn primary add-btn" id="btnAdd">Add</button>
+          <div class="field">
+            <span>Skills <em>(pick one or more)</em></span>
+            <div class="skill-picker" id="skillPicker" role="group" aria-label="Assign skills"></div>
+          </div>
+          <button type="button" class="btn primary" id="btnAdd">Add person</button>
         </div>
+        <p class="hint">Assign skills like Frontend / Backend so Skill mode can mix specialties across teams.</p>
 
         <label class="field">
-          <span>Paste list <em>(one name per line)</em></span>
-          <textarea id="bulkInput" rows="5" placeholder="Alex&#10;Jordan&#10;Sam&#10;Riley"></textarea>
+          <span>Paste list <em>(Name, Label, Skills — e.g. Alex, M, Frontend+Backend)</em></span>
+          <textarea id="bulkInput" rows="5" placeholder="Alex, M, Frontend&#10;Jordan, F, Backend&#10;Sam, M, Frontend+Design&#10;Riley, F, QA"></textarea>
         </label>
         <div class="inline-actions">
           <button type="button" class="btn soft" id="btnImport">Import list</button>
@@ -114,12 +153,13 @@
       <div class="tab-panel" id="tab-rules" role="tabpanel" hidden>
         <fieldset class="fieldset">
           <legend>Distribute equally by</legend>
-          <div class="segmented" id="balanceMode">
-            <button type="button" class="seg active" data-mode="default">Default</button>
+          <div class="segmented segmented-4" id="balanceMode">
+            <button type="button" class="seg" data-mode="default">Default</button>
+            <button type="button" class="seg active" data-mode="skill">Skill</button>
             <button type="button" class="seg" data-mode="gender">Gender</button>
             <button type="button" class="seg" data-mode="label">Label</button>
           </div>
-          <p class="hint" id="balanceHint">Shuffle everyone evenly across teams.</p>
+          <p class="hint" id="balanceHint">Spread skill types (Frontend, Backend, …) evenly across teams.</p>
         </fieldset>
 
         <div class="grid-2">
@@ -148,6 +188,16 @@
           <span>Show labels on the results board</span>
         </label>
 
+        <label class="check">
+          <input type="checkbox" id="revealMode" checked />
+          <span>Reveal mode — deal names onto teams one by one</span>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="autoArena" />
+          <span>Open Arena automatically after each spin</span>
+        </label>
+
         <fieldset class="fieldset">
           <legend>Constraints</legend>
           <p class="hint">Keep people together or apart. Use exact names from your list.</p>
@@ -163,7 +213,14 @@
       </div>
 
       <div class="tab-panel" id="tab-teams" role="tabpanel" hidden>
-        <p class="hint">Customize names before you spin. Defaults update with group count.</p>
+        <p class="hint">Add teams, rename them, or remove ones you don’t need. Group count stays in sync.</p>
+        <div class="field-row team-add-row">
+          <label class="field grow">
+            <span>New team name</span>
+            <input type="text" id="newTeamInput" placeholder="e.g. Red Dragons" autocomplete="off" />
+          </label>
+          <button type="button" class="btn primary add-btn" id="btnAddTeam">Add team</button>
+        </div>
         <div class="team-names" id="teamNames"></div>
         <div class="inline-actions">
           <button type="button" class="btn soft" id="btnResetTeamNames">Reset names</button>
@@ -185,13 +242,19 @@
           <p class="eyebrow">Results</p>
           <h2 id="resultsTitle">Groups board</h2>
         </div>
-        <button type="button" class="icon-btn" data-close="results" aria-label="Close">×</button>
+        <div class="modal-head-right">
+          <div class="fairness" id="modalFairness" hidden></div>
+          <button type="button" class="icon-btn" data-close="results" aria-label="Close">×</button>
+        </div>
       </header>
+      <div class="reveal-callout modal-callout" id="modalCallout" aria-live="polite"></div>
       <div class="results-grid" id="resultsGrid"></div>
       <footer class="modal-foot">
+        <button type="button" class="btn soft" id="btnSkipRevealModal" hidden>Skip reveal</button>
         <button type="button" class="btn soft" id="btnCopy">Copy</button>
         <button type="button" class="btn soft" id="btnCsv">Download CSV</button>
         <button type="button" class="btn soft" id="btnImage">Save image</button>
+        <button type="button" class="btn soft" id="btnOpenArena">Open Arena</button>
         <button type="button" class="btn primary" id="btnRespin">Spin again</button>
       </footer>
     </div>
