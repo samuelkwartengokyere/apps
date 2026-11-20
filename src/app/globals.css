@@ -1,0 +1,130 @@
+@import "tailwindcss";
+
+/* Midnight Secure design tokens (blueprint §3.1) */
+@theme {
+  --color-midnight: #07111f;
+  --color-navy: #0d1b2a;
+  --color-navy-2: #12263a;
+  --color-primary: #2563eb;
+  --color-cyan: #22d3ee;
+  --color-violet: #8b5cf6;
+  --color-ink: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-success: #22c55e;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-line: rgb(148 163 184 / 0.16);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  background: var(--color-midnight);
+  color: var(--color-ink);
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgb(37 99 235 / 0.18), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, rgb(139 92 246 / 0.08), transparent 60%),
+    var(--color-midnight);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: rgb(34 211 238 / 0.3);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Subtle grid pattern (blueprint §3.3) */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(148 163 184 / 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(148 163 184 / 0.06) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse at 50% 30%, black 20%, transparent 75%);
+}
+
+.glass {
+  background: linear-gradient(180deg, rgb(18 38 58 / 0.65), rgb(13 27 42 / 0.55));
+  border: 1px solid var(--color-line);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #f8fafc 20%, #22d3ee 60%, #60a5fa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* CSS-only sweeping scanner used by the Security Center visual */
+@keyframes sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+@keyframes flow {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.anim-sweep {
+  animation: sweep 6s linear infinite;
+}
+.anim-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+.anim-flow {
+  animation: flow 1.2s linear infinite;
+}
+.anim-pulse-ring {
+  animation: pulse-ring 3s ease-out infinite;
+}
+
+/* Blueprint §10.4: replace looping/large motion when the OS asks for it */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .anim-sweep,
+  .anim-float,
+  .anim-flow,
+  .anim-pulse-ring {
+    animation: none;
+  }
+}
