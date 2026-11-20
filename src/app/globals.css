@@ -9,7 +9,8 @@
   --color-cyan: #22d3ee;
   --color-violet: #8b5cf6;
   --color-ink: #f8fafc;
-  --color-muted: #94a3b8;
+  --color-muted: #9fb0c6;
+  --color-soft: #c3cfe0;
   --color-success: #22c55e;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
@@ -19,7 +20,22 @@
   --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
+/* Page gutter that tracks the 80rem content column, so fixed/pinned layers line up with the header */
+:root {
+  --gutter: 1.25rem;
+  --edge: max(var(--gutter), calc((100vw - 80rem) / 2 + var(--gutter)));
+  /* Left-aligned journey copy sits a little outside the header's content column */
+  --edge-text: max(18px, calc(var(--edge) - 6rem));
+}
+@media (min-width: 40rem) {
+  :root {
+    --gutter: 2rem;
+  }
+}
+
 html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
   background: var(--color-midnight);
   color: var(--color-ink);
   scroll-behavior: smooth;
@@ -34,6 +50,102 @@ body {
     radial-gradient(900px 500px at -10% 30%, rgb(139 92 246 / 0.08), transparent 60%),
     var(--color-midnight);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-size: clamp(1rem, 0.96rem + 0.12vw, 1.0625rem);
+  overflow-wrap: break-word;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+p {
+  text-wrap: pretty;
+}
+
+/* Fluid type scale: reads well from 320px phones to 4K desktops */
+.t-display {
+  font-size: clamp(2.5rem, 1.5rem + 4.4vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 650;
+}
+.t-h2 {
+  font-size: clamp(1.75rem, 1.2rem + 2.3vw, 3.5rem);
+  line-height: 1.08;
+  letter-spacing: -0.032em;
+  font-weight: 620;
+}
+.t-h3 {
+  font-size: clamp(1.5rem, 1.1rem + 1.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.028em;
+  font-weight: 620;
+}
+.t-lead {
+  font-size: clamp(1.0625rem, 0.98rem + 0.4vw, 1.375rem);
+  line-height: 1.6;
+  color: var(--color-soft);
+}
+.t-body {
+  font-size: clamp(0.9375rem, 0.9rem + 0.18vw, 1.125rem);
+  line-height: 1.7;
+  color: var(--color-muted);
+}
+.t-small {
+  font-size: clamp(0.8125rem, 0.79rem + 0.1vw, 0.9375rem);
+  line-height: 1.6;
+}
+.t-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.6875rem, 0.66rem + 0.12vw, 0.8125rem);
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--color-cyan);
+}
+.t-eyebrow::before {
+  content: "";
+  width: 1.75rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-cyan));
+}
+.t-eyebrow--bare::before {
+  display: none;
+}
+.t-legible {
+  /* drop-shadow (not text-shadow) so gradient-clipped text isn't darkened by its own shadow */
+  filter: drop-shadow(0 2px 14px rgb(7 17 31 / 0.85));
+}
+
+/* Cinematic copy card */
+.cine-card {
+  position: relative;
+  border-radius: 1.5rem;
+  border: 1px solid rgb(148 163 184 / 0.2);
+  background:
+    linear-gradient(180deg, rgb(34 211 238 / 0.07), transparent 38%),
+    linear-gradient(160deg, rgb(18 38 58 / 0.78), rgb(7 17 31 / 0.82));
+  box-shadow:
+    0 30px 80px -24px rgb(0 0 0 / 0.85),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+}
+.cine-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  margin: 1.5rem 0;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--color-cyan), var(--color-primary) 60%, transparent);
+  opacity: 0.8;
 }
 
 ::selection {
@@ -116,6 +228,35 @@ body {
   animation: pulse-ring 3s ease-out infinite;
 }
 
+@keyframes scroll-dot {
+  0% {
+    transform: translate(-50%, 0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 14px);
+    opacity: 0;
+  }
+}
+.anim-scroll-dot {
+  animation: scroll-dot 1.8s ease-in-out infinite;
+}
+
+/* ScrollTrigger drives scrolling itself; native smooth scrolling would fight it */
+html[data-cinematic] {
+  scroll-behavior: auto;
+  overflow-x: clip;
+}
+/* Scroll anchoring re-adjusts the offset every time the pin switches between
+   fixed and static, which makes a pinned page scroll by itself. */
+html[data-cinematic],
+html[data-cinematic] body {
+  overflow-anchor: none;
+}
+
 /* Blueprint §10.4: replace looping/large motion when the OS asks for it */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -124,7 +265,797 @@ body {
   .anim-sweep,
   .anim-float,
   .anim-flow,
-  .anim-pulse-ring {
+  .anim-pulse-ring,
+  .anim-scroll-dot {
     animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Loading screen (cinematic/SectionTransition): shown on the first     */
+/* load and while a nav item moves between sections.                    */
+/* Three nested steel rings turn around a glowing core, hovering in a   */
+/* long, glowing hall: light strips racing to a distant doorway, a     */
+/* ceiling lamp, a wet polished floor holding the reflection of the     */
+/* object. When the                                                     */
+/* destination is ready the camera pushes into the core and the room    */
+/* dissolves into the page.                                             */
+/*                                                                      */
+/* Server-rendered in its covering state, so it is in the first paint.  */
+/* Only transform, opacity and filter ever animate: that runs on the    */
+/* GPU compositor and stays smooth while the main thread loads the      */
+/* scene behind the screen.                                             */
+/* ------------------------------------------------------------------ */
+.nt {
+  --o: min(64vw, 42vh, 18rem);
+  /* Object centre (down the screen) and the vanishing point of the hall */
+  --cy: 43%;
+  /* The hall, all in units of the object: width, height, and how far it reaches toward and away from the viewer */
+  --w: calc(var(--o) * 2.6);
+  --h: calc(var(--o) * 1.55);
+  --near: calc(var(--o) * 1.7);
+  --far: calc(var(--o) * 9);
+  --len: calc(var(--near) + var(--far));
+  --zc: calc((var(--near) - var(--far)) / 2);
+  position: fixed;
+  inset: 0;
+  /* Above the header: the room fills the whole screen */
+  z-index: 60;
+  overflow: hidden;
+  contain: layout paint style;
+  background: #03060b;
+}
+/* Vignette: the corners fall into darkness */
+.nt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: radial-gradient(120% 100% at 50% 45%, transparent 45%, rgb(0 0 0 / 0.7));
+}
+/* Film grain over everything */
+.nt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0.2;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .6  0 0 0 0 .66  0 0 0 0 .75  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+/* Idle: out of sight and paused (no animation below runs in this phase) */
+.nt[data-phase="idle"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+.nt:not([data-phase="idle"]) {
+  will-change: opacity;
+}
+.nt[data-phase="cover"] {
+  animation: nt-in 0.4s ease both;
+}
+/* Once the camera is through, the whole room dissolves into the page */
+.nt[data-phase="reveal"] {
+  pointer-events: none;
+  animation: nt-out 0.4s ease 0.7s both;
+}
+
+/* The whole chamber is one camera move: the reveal pushes through the core */
+.nt-world {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% var(--cy);
+}
+.nt[data-phase="cover"] .nt-world {
+  animation: nt-lights 1s steps(1, end) backwards;
+}
+.nt[data-phase="reveal"] .nt-world {
+  animation: nt-push 0.75s cubic-bezier(0.6, 0, 0.9, 0.55) both;
+}
+/* The core floods the screen as the camera arrives */
+.nt-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% var(--cy), #fff 0, #c8f7ff 14%, #22d3ee 38%, #2563eb 70%, #0a1a40);
+}
+.nt[data-phase="reveal"] .nt-flash {
+  animation: nt-flash 0.55s ease-in 0.2s both;
+}
+
+/* ---- The hall ------------------------------------------------------- */
+/* A long corridor in real perspective: dark glass-and-steel walls, light strips running to a distant doorway, a ceiling lamp, and a wet polished floor. The planes are laid out in CSS 3D around the vanishing point (the object's centre); light pulses race along the strips toward the viewer. */
+.nt-world {
+  perspective: calc(var(--o) * 2.3);
+  perspective-origin: 50% var(--cy);
+}
+.nt-hall {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+.nt:not([data-phase="idle"]) .nt-hall {
+  animation: nt-sway 14s ease-in-out infinite alternate;
+}
+.nt-plane {
+  position: absolute;
+  overflow: hidden;
+}
+/* Floor and ceiling: long side runs away from the viewer (top of the plane is the far end) */
+.nt-floor {
+  width: var(--w);
+  height: var(--len);
+  left: calc(var(--w) * -0.5);
+  top: calc(var(--len) * -0.5);
+  transform: translate3d(0, calc(var(--h) * 0.5), var(--zc)) rotateX(90deg);
+  background:
+    /* wet-look sheen down the middle, and the glow of the strips along the edges */
+    linear-gradient(90deg, transparent 36%, rgb(150 210 255 / 0.13) 50%, transparent 64%),
+    linear-gradient(90deg, rgb(34 211 238 / 0.2), transparent 17%, transparent 83%, rgb(34 211 238 / 0.2)),
+    /* tile seams across the floor */
+    repeating-linear-gradient(180deg, rgb(255 255 255 / 0.07) 0 1px, transparent 1px calc(var(--o) * 1.1)),
+    linear-gradient(90deg, #04070c, #0b1420 30%, #0e1928 50%, #0b1420 70%, #04070c);
+}
+.nt-ceil {
+  width: var(--w);
+  height: var(--len);
+  left: calc(var(--w) * -0.5);
+  top: calc(var(--len) * -0.5);
+  /* Seen from below: the top of the plane is the near end here */
+  transform: translate3d(0, calc(var(--h) * -0.5), var(--zc)) rotateX(-90deg);
+  background:
+    repeating-linear-gradient(180deg, rgb(0 0 0 / 0.5) 0 2px, rgb(255 255 255 / 0.05) 2px 3px, transparent 3px calc(var(--o) * 1.5)),
+    linear-gradient(90deg, #04070c, #0d1623 50%, #04070c);
+}
+/* The lamp the hall is lit by */
+.nt-lamp {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 45%;
+  width: 10%;
+  background:
+    repeating-linear-gradient(180deg, rgb(8 14 22 / 0.9) 0 4px, transparent 4px calc(var(--o) * 1.5)),
+    linear-gradient(90deg, #5d8ba6, #bfe3f5 35%, #e8f7ff 50%, #bfe3f5 65%, #5d8ba6);
+  box-shadow: 0 0 calc(var(--o) * 0.22) calc(var(--o) * 0.03) rgb(150 205 250 / 0.4);
+}
+/* Side walls: the long side runs away from the viewer */
+.nt-wall {
+  width: var(--len);
+  height: var(--h);
+  left: calc(var(--len) * -0.5);
+  top: calc(var(--h) * -0.5);
+  background:
+    /* horizontal panel joints */
+    linear-gradient(180deg, transparent 12%, rgb(255 255 255 / 0.06) 12% calc(12% + 1px), transparent calc(12% + 1px) 50%, rgb(0 0 0 / 0.5) 50% calc(50% + 2px), rgb(255 255 255 / 0.05) calc(50% + 2px) calc(50% + 3px), transparent calc(50% + 3px)),
+    /* vertical panel seams */
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.6) 0 2px, rgb(255 255 255 / 0.07) 2px 3px, transparent 3px calc(var(--o) * 1.5)),
+    /* floor-level bounce of the lamp, and the dark upper wall */
+    linear-gradient(180deg, #05080d, #101a28 40%, #14202f 78%, #070c13);
+}
+.nt-wall-l {
+  transform: translate3d(calc(var(--w) * -0.5), 0, var(--zc)) rotateY(90deg);
+}
+.nt-wall-r {
+  transform: translate3d(calc(var(--w) * 0.5), 0, var(--zc)) rotateY(-90deg);
+}
+/* Light strips set into the surfaces */
+.nt-strip {
+  position: absolute;
+  overflow: hidden;
+  background: rgb(125 235 255 / 0.5);
+  box-shadow: 0 0 calc(var(--o) * 0.05) calc(var(--o) * 0.012) rgb(34 211 238 / 0.55);
+}
+.nt-strip-floor {
+  top: 0;
+  bottom: 0;
+  width: calc(var(--o) * 0.012);
+}
+.nt-strip-floor.l {
+  left: 14%;
+}
+.nt-strip-floor.r {
+  right: 14%;
+}
+.nt-strip-wall {
+  left: 0;
+  right: 0;
+  top: 74%;
+  height: calc(var(--o) * 0.012);
+}
+.nt-strip-amber {
+  top: 16%;
+  height: calc(var(--o) * 0.008);
+  background: rgb(255 190 110 / 0.45);
+  box-shadow: 0 0 calc(var(--o) * 0.04) rgb(255 160 70 / 0.4);
+}
+/* Packets of light racing from the far end toward the viewer */
+.nt-pulse {
+  position: absolute;
+  background: linear-gradient(var(--head), transparent, #b8f6ff 85%, #fff);
+}
+.nt-strip-floor .nt-pulse {
+  --head: 180deg;
+  top: 0;
+  left: -50%;
+  right: -50%;
+  height: calc(var(--o) * 1.5);
+  --k: 1;
+}
+.nt-ceil .nt-pulse {
+  --head: 0deg;
+  --k: -1;
+  bottom: 0;
+}
+.nt-wall-l .nt-pulse {
+  --head: 270deg;
+  --k: -1;
+  right: 0;
+}
+.nt-wall-r .nt-pulse {
+  --head: 90deg;
+  --k: 1;
+  left: 0;
+}
+.nt-strip-wall .nt-pulse {
+  top: -50%;
+  bottom: -50%;
+  width: calc(var(--o) * 1.6);
+}
+.nt:not([data-phase="idle"]) .nt-strip-floor .nt-pulse,
+.nt:not([data-phase="idle"]) .nt-ceil .nt-pulse {
+  animation: nt-run-y 3.2s cubic-bezier(0.45, 0, 0.8, 0.6) infinite;
+}
+.nt:not([data-phase="idle"]) .nt-strip-wall .nt-pulse {
+  animation: nt-run-x 3.2s cubic-bezier(0.45, 0, 0.8, 0.6) infinite;
+}
+/* A faint pulse also runs down the lamp, so the ceiling is never still */
+.nt-ceil .nt-pulse {
+  left: 45%;
+  width: 10%;
+  height: calc(var(--o) * 2);
+  opacity: 0.35;
+  mix-blend-mode: plus-lighter;
+}
+/* The doorway at the end, where the hall leads */
+.nt-portal {
+  position: absolute;
+  left: calc(var(--w) * -0.2);
+  top: calc(var(--h) * -0.32);
+  width: calc(var(--w) * 0.4);
+  height: calc(var(--h) * 0.64);
+  transform: translateZ(calc(var(--far) * -1));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 0, #d6f7ff 35%, rgb(76 201 240 / 0.6) 70%, transparent);
+  box-shadow: 0 0 calc(var(--o) * 0.9) calc(var(--o) * 0.2) rgb(80 190 255 / 0.4);
+}
+/* Air: depth haze toward the doorway, so the far end melts into light */
+.nt-haze {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse calc(var(--o) * 1.1) calc(var(--o) * 0.7) at 50% var(--cy), rgb(150 215 255 / 0.4), transparent 72%),
+    radial-gradient(ellipse 70% 55% at 50% var(--cy), rgb(60 120 200 / 0.2), transparent 75%);
+}
+.nt-air {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  overflow: hidden;
+}
+.nt-mote {
+  position: absolute;
+  top: 0;
+  border-radius: 50%;
+  background: rgb(200 235 255 / 0.8);
+  box-shadow: 0 0 6px rgb(150 215 255 / 0.7);
+  opacity: 0;
+}
+/* The object's own glow, cast on the floor beneath it */
+.nt-pool {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--cy) + var(--o) * 0.775);
+  width: calc(var(--o) * 2.2);
+  height: calc(var(--o) * 0.36);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(34 211 238 / 0.45), rgb(37 99 235 / 0.16) 55%, transparent);
+}
+/* Low haze hanging over the floor */
+.nt-fog {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 42%;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(ellipse 40% 60% at 25% 100%, rgb(110 190 255 / 0.12), transparent 70%),
+    radial-gradient(ellipse 45% 55% at 72% 100%, rgb(110 190 255 / 0.09), transparent 70%);
+}
+
+/* ---- The object ---------------------------------------------------- */
+.nt-stage {
+  position: absolute;
+  left: 50%;
+  top: var(--cy);
+  width: var(--o);
+  height: var(--o);
+  margin: calc(var(--o) * -0.5) 0 0 calc(var(--o) * -0.5);
+  perspective: 950px;
+  /* Polished floor: the object mirrors in it, fading out */
+  -webkit-box-reflect: below calc(var(--o) * 0.55) linear-gradient(transparent 48%, rgb(255 255 255 / 0.26));
+}
+.nt[data-phase="cover"] .nt-stage {
+  animation: nt-appear 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.nt-halo {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--o) * 0.5);
+  width: 170%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  background: radial-gradient(closest-side, rgb(34 211 238 / 0.22), rgb(37 99 235 / 0.08) 55%, transparent);
+}
+.nt-obj {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: var(--o);
+  transform-style: preserve-3d;
+}
+.nt-gimbal {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+.nt-gimbal-b {
+  inset: 12%;
+}
+.nt-gimbal-c {
+  inset: 13%;
+  transform: rotateX(68deg);
+}
+
+/* A ring is a few thin discs stacked in depth, each a steel conic gradient cut into a band */
+.nt-slice {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transform: translateZ(var(--z));
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - var(--w)), #000 calc(100% - var(--w) + 1px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - var(--w)), #000 calc(100% - var(--w) + 1px));
+}
+.nt-slice-a {
+  --w: 11%;
+  background:
+    linear-gradient(rgb(0 0 0 / var(--dark)), rgb(0 0 0 / var(--dark))),
+    conic-gradient(from 30deg, #2a323d, #8995a7, #3a4452, #c3cedd, #2b333f, #77849a, #323b47, #aab6c6, #2a323d);
+}
+.nt-slice-b {
+  --w: 14%;
+  background:
+    linear-gradient(rgb(0 0 0 / var(--dark)), rgb(0 0 0 / var(--dark))),
+    conic-gradient(from 200deg, #3a4452, #d4dde9, #5a6678, #9aa7b8, #2c3541, #b9c5d4, #465162, #e6edf6, #3a4452);
+}
+.nt-slice-c {
+  --w: 17%;
+  background:
+    linear-gradient(rgb(0 0 0 / var(--dark)), rgb(0 0 0 / var(--dark))),
+    conic-gradient(from 80deg, #20272f, #6a768a, #2b333e, #8a96a8, #1e252d, #5d697c, #29313b, #7a8699, #20272f);
+}
+/* Engraved ticks on the face of the outer ring */
+.nt-slice-a:first-child::after,
+.nt-slice-a:last-child::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-conic-gradient(rgb(0 0 0 / 0.6) 0 0.7deg, transparent 0.7deg 7.5deg);
+}
+/* Glowing inner edge of the smallest ring */
+.nt-eye {
+  position: absolute;
+  inset: 17%;
+  border-radius: 50%;
+  border: 2px solid rgb(165 243 252 / 0.9);
+  box-shadow: 0 0 14px 1px rgb(34 211 238 / 0.8), inset 0 0 12px rgb(34 211 238 / 0.6);
+}
+.nt-core {
+  /* Centred with auto margins: no transform involved, so nothing can shift it */
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 24%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0, #a5f3fc 22%, #22d3ee 50%, #2563eb 85%, #0a2a6b);
+  box-shadow: 0 0 26px 6px rgb(34 211 238 / 0.65), 0 0 70px 14px rgb(37 99 235 / 0.4);
+  transform: translateZ(0);
+  will-change: transform;
+}
+/* Contact shadow on the floor beneath the hovering object */
+.nt-shadow {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--o) * 1.275);
+  width: 82%;
+  height: calc(var(--o) * 0.1);
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.8), transparent);
+}
+
+/* Motion: runs only while the screen is up (cover and reveal), and only as transform/opacity */
+.nt:not([data-phase="idle"]) .nt-obj {
+  animation: nt-tilt 9s ease-in-out infinite;
+}
+.nt:not([data-phase="idle"]) .nt-gimbal-a {
+  animation: nt-spin-y 9s linear infinite;
+}
+.nt:not([data-phase="idle"]) .nt-gimbal-b {
+  animation: nt-spin-x 6.4s linear infinite;
+}
+.nt:not([data-phase="idle"]) .nt-gimbal-c {
+  animation: nt-spin-z 8s linear infinite;
+}
+.nt:not([data-phase="idle"]) .nt-core {
+  animation: nt-pulse 2.2s ease-in-out infinite;
+}
+.nt:not([data-phase="idle"]) .nt-halo {
+  animation: nt-breathe 3.4s ease-in-out infinite;
+}
+.nt:not([data-phase="idle"]) .nt-pool {
+  animation: nt-breathe 3.4s ease-in-out infinite;
+}
+.nt:not([data-phase="idle"]) .nt-mote {
+  animation: nt-drift linear infinite;
+}
+.nt:not([data-phase="idle"]) .nt-fog {
+  animation: nt-fog 16s ease-in-out infinite alternate;
+}
+
+@keyframes nt-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nt-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes nt-flash {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes nt-push {
+  from {
+    transform: none;
+  }
+  to {
+    transform: scale(5);
+  }
+}
+@keyframes nt-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Fluorescent-style start-up flicker */
+@keyframes nt-lights {
+  0% {
+    filter: brightness(0.15);
+  }
+  18% {
+    filter: brightness(0.55);
+  }
+  26% {
+    filter: brightness(0.2);
+  }
+  44% {
+    filter: brightness(0.8);
+  }
+  52% {
+    filter: brightness(0.4);
+  }
+  66%,
+  100% {
+    filter: brightness(1);
+  }
+}
+@keyframes nt-sway {
+  from {
+    transform: rotateY(-1.6deg) rotateX(0.6deg);
+  }
+  to {
+    transform: rotateY(1.6deg) rotateX(-0.6deg);
+  }
+}
+@keyframes nt-run-y {
+  from {
+    translate: 0 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  to {
+    translate: 0 calc(var(--len) * var(--k));
+    opacity: 1;
+  }
+}
+@keyframes nt-run-x {
+  from {
+    translate: 0 0;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  to {
+    translate: calc(var(--len) * var(--k)) 0;
+    opacity: 1;
+  }
+}
+@keyframes nt-fog {
+  from {
+    transform: translateX(-4%);
+  }
+  to {
+    transform: translateX(4%);
+  }
+}
+@keyframes nt-drift {
+  0% {
+    transform: translate3d(0, -4vh, 0);
+    opacity: 0;
+  }
+  15%,
+  80% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(18px, 105vh, 0);
+    opacity: 0;
+  }
+}
+@keyframes nt-tilt {
+  0%,
+  100% {
+    transform: rotateX(-16deg) rotateY(-14deg);
+  }
+  50% {
+    transform: rotateX(-4deg) rotateY(16deg);
+  }
+}
+@keyframes nt-spin-y {
+  to {
+    transform: rotateY(360deg);
+  }
+}
+@keyframes nt-spin-x {
+  to {
+    transform: rotateX(360deg);
+  }
+}
+@keyframes nt-spin-z {
+  from {
+    transform: rotateX(68deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(68deg) rotateZ(-360deg);
+  }
+}
+@keyframes nt-pulse {
+  0%,
+  100% {
+    scale: 0.92;
+  }
+  50% {
+    scale: 1.08;
+  }
+}
+@keyframes nt-breathe {
+  0%,
+  100% {
+    opacity: 0.7;
+    scale: 0.95;
+  }
+  50% {
+    opacity: 1;
+    scale: 1.05;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nt:not([data-phase="idle"]) *,
+  .nt[data-phase="cover"] * {
+    animation-duration: 0.01s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+  }
+  .nt-mote {
+    display: none;
+  }
+  .nt[data-phase="reveal"] {
+    animation-delay: 0s;
+  }
+  .nt[data-phase="reveal"] .nt-world {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Nav loading screen (cinematic/SectionTransition): while a nav item   */
+/* takes the visitor to another section, the page blurs and a circular  */
+/* spinner turns over it; both lift once the destination is on screen.  */
+/* The spinner only rotates (a transform), so it keeps turning while    */
+/* the main thread loads the scene behind it.                           */
+/* ------------------------------------------------------------------ */
+.nv {
+  --s: 3.5rem;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  background-color: rgb(4 9 15 / 0.38);
+  -webkit-backdrop-filter: blur(18px) saturate(0.85);
+  backdrop-filter: blur(18px) saturate(0.85);
+}
+.nv[data-phase="idle"] {
+  visibility: hidden;
+  pointer-events: none;
+}
+/* First load: this screen only stands in on a refresh (see LANDING_SCRIPT); a fresh visit opens with the hall */
+.nv[data-boot] {
+  display: none;
+}
+html[data-load="reload"] .nv[data-boot] {
+  display: grid;
+}
+html[data-load="reload"] .nt {
+  display: none;
+}
+.nv[data-phase="cover"] {
+  animation: nv-in 0.4s ease both;
+}
+.nv[data-phase="reveal"] {
+  pointer-events: none;
+  animation: nv-out 0.5s ease both;
+}
+.nv-loader {
+  position: relative;
+  width: var(--s);
+  height: var(--s);
+}
+.nv[data-phase="cover"] .nv-loader {
+  animation: nv-pop 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s both;
+}
+.nv[data-phase="reveal"] .nv-loader {
+  animation: nv-shrink 0.3s ease both;
+}
+.nv-halo {
+  position: absolute;
+  inset: -90%;
+  background: radial-gradient(closest-side, rgb(34 211 238 / 0.22), rgb(37 99 235 / 0.08) 55%, transparent);
+}
+.nv-track,
+.nv-arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  -webkit-mask-image: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
+  mask-image: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3.5px));
+}
+.nv-track {
+  background: rgb(148 163 184 / 0.18);
+}
+.nv-spin {
+  position: absolute;
+  inset: 0;
+  filter: drop-shadow(0 0 6px rgb(34 211 238 / 0.7));
+}
+.nv:not([data-phase="idle"]) .nv-spin {
+  animation: nv-turn 0.95s linear infinite;
+}
+/* A comet: fades in over most of the circle and ends in a bright head at the top */
+.nv-arc {
+  background: conic-gradient(from 0deg, transparent 0 8%, rgb(34 211 238 / 0.15) 8%, #22d3ee 70%, #5b8cff 100%);
+}
+.nv-dot {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 4px;
+  height: 4px;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 8px 2px rgb(165 243 252 / 0.9);
+}
+
+@keyframes nv-in {
+  from {
+    background-color: rgb(4 9 15 / 0);
+    -webkit-backdrop-filter: blur(0) saturate(1);
+    backdrop-filter: blur(0) saturate(1);
+  }
+  to {
+    background-color: rgb(4 9 15 / 0.38);
+    -webkit-backdrop-filter: blur(18px) saturate(0.85);
+    backdrop-filter: blur(18px) saturate(0.85);
+  }
+}
+@keyframes nv-out {
+  from {
+    background-color: rgb(4 9 15 / 0.38);
+    -webkit-backdrop-filter: blur(18px) saturate(0.85);
+    backdrop-filter: blur(18px) saturate(0.85);
+  }
+  to {
+    background-color: rgb(4 9 15 / 0);
+    -webkit-backdrop-filter: blur(0) saturate(1);
+    backdrop-filter: blur(0) saturate(1);
+  }
+}
+@keyframes nv-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes nv-shrink {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+@keyframes nv-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nv:not([data-phase="idle"]) .nv-spin {
+    animation-duration: 2.4s;
   }
 }

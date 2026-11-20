@@ -8,6 +8,8 @@ export type Capabilities = {
   reducedMotion: boolean;
   /** Narrow viewport: render a simplified, cheaper scene. */
   compact: boolean;
+  /** Below the `lg` breakpoint: copy sits in a bottom sheet instead of a side column. */
+  stacked: boolean;
   finePointer: boolean;
 };
 
@@ -30,12 +32,14 @@ export function useCapabilities(): Capabilities {
     webgl: false,
     reducedMotion: true,
     compact: false,
+    stacked: false,
     finePointer: false,
   });
 
   useEffect(() => {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const narrow = window.matchMedia("(max-width: 767px)");
+    const stackedQuery = window.matchMedia("(max-width: 1023px)");
     const pointer = window.matchMedia("(pointer: fine)");
     const webgl = hasWebGL();
 
@@ -45,16 +49,19 @@ export function useCapabilities(): Capabilities {
         webgl,
         reducedMotion: motion.matches,
         compact: narrow.matches,
+        stacked: stackedQuery.matches,
         finePointer: pointer.matches,
       });
 
     update();
     motion.addEventListener("change", update);
     narrow.addEventListener("change", update);
+    stackedQuery.addEventListener("change", update);
     pointer.addEventListener("change", update);
     return () => {
       motion.removeEventListener("change", update);
       narrow.removeEventListener("change", update);
+      stackedQuery.removeEventListener("change", update);
       pointer.removeEventListener("change", update);
     };
   }, []);

@@ -34,14 +34,14 @@ export function Header() {
         scrolled || open ? "border-b border-line bg-midnight/80 backdrop-blur-xl" : "border-b border-transparent"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex h-16 max-w-7xl items-center lg:h-[4.5rem] justify-between px-5 sm:px-8">
         <a href="#top" aria-label="SecureVault home">
           <Logo />
         </a>
 
         <nav aria-label="Primary" className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="text-sm text-muted transition-colors hover:text-ink">
+            <a key={l.href} href={l.href} className="text-[15px] text-muted transition-colors hover:text-ink">
               {l.label}
             </a>
           ))}
@@ -74,21 +74,21 @@ export function Header() {
       </div>
 
       {open && (
-        <nav id="mobile-menu" aria-label="Mobile" className="border-t border-line px-5 pb-5 pt-3 md:hidden">
+        <nav id="mobile-menu" aria-label="Mobile" className="max-h-[calc(100svh-4rem)] overflow-y-auto border-t border-line px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] pt-3 md:hidden">
           <ul className="flex flex-col">
             {links.map((l) => (
               <li key={l.href}>
-                <a href={l.href} onClick={() => setOpen(false)} className="block py-3 text-base text-ink/90">
+                <a href={l.href} onClick={() => setOpen(false)} className="block py-3.5 text-lg text-ink/90">
                   {l.label}
                 </a>
               </li>
             ))}
           </ul>
           <div className="mt-3 flex gap-3">
-            <a href="#" className="flex-1 rounded-lg border border-line py-2.5 text-center text-sm">
+            <a href="#" className="flex-1 rounded-lg border border-line py-3 text-center text-base">
               Sign in
             </a>
-            <a href="#get-started" onClick={() => setOpen(false)} className="flex-1 rounded-lg bg-primary py-2.5 text-center text-sm font-medium">
+            <a href="#get-started" onClick={() => setOpen(false)} className="flex-1 rounded-lg bg-primary py-3 text-center text-base font-medium">
               Get started
             </a>
           </div>

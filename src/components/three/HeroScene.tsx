@@ -4,108 +4,19 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import Scene3D from "./Scene3D";
+import { VaultDoor } from "./vaultModels";
 
 // Colours > 1.0 so only these elements cross the bloom threshold.
 const GLOW = new THREE.Color("#22d3ee").multiplyScalar(2.4);
 const GLOW_BLUE = new THREE.Color("#3b82f6").multiplyScalar(2);
 
-const metal = {
-  color: "#1a3a5a",
-  metalness: 1,
-  roughness: 0.3,
-  envMapIntensity: 1.8,
-} as const;
-
-function Bolts({ count = 12, radius = 1.38 }: { count?: number; radius?: number }) {
-  const bolts = useMemo(
-    () =>
-      Array.from({ length: count }, (_, i) => {
-        const a = (i / count) * Math.PI * 2;
-        return { x: Math.cos(a) * radius, y: Math.sin(a) * radius, a };
-      }),
-    [count, radius],
-  );
-  return (
-    <group position={[0, 0, 0.26]}>
-      {bolts.map((b, i) => (
-        <mesh key={i} position={[b.x, b.y, 0]} rotation={[0, 0, b.a]}>
-          <boxGeometry args={[0.22, 0.09, 0.06]} />
-          <meshStandardMaterial color="#1b3a57" metalness={1} roughness={0.25} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-function Wheel() {
-  const ref = useRef<THREE.Group>(null);
+/** The hero vault door: the same steel door as the product rooms, with a slow dial idle. */
+function HeroDoor() {
+  const dial = useRef<THREE.Group>(null);
   useFrame((_, dt) => {
-    if (ref.current) ref.current.rotation.z += dt * 0.12; // slow mechanical idle
+    if (dial.current) dial.current.rotation.z += dt * 0.12; // slow mechanical idle
   });
-  return (
-    <group ref={ref} position={[0, 0, 0.46]}>
-      {Array.from({ length: 6 }, (_, i) => {
-        const a = (i / 6) * Math.PI * 2;
-        return (
-          <mesh key={i} position={[Math.cos(a) * 0.82, Math.sin(a) * 0.82, 0]} rotation={[0, 0, a]}>
-            <boxGeometry args={[0.62, 0.07, 0.06]} />
-            <meshStandardMaterial {...metal} color="#2a5a86" roughness={0.22} />
-          </mesh>
-        );
-      })}
-      <mesh>
-        <torusGeometry args={[0.55, 0.02, 12, 96]} />
-        <meshBasicMaterial color={GLOW_BLUE} toneMapped={false} />
-      </mesh>
-    </group>
-  );
-}
-
-function Door() {
-  return (
-    <group rotation={[Math.PI / 2, 0, 0]}>
-      {/* main slab */}
-      <mesh>
-        <cylinderGeometry args={[1.6, 1.6, 0.5, 96]} />
-        <meshStandardMaterial {...metal} />
-      </mesh>
-      {/* recessed face plate */}
-      <mesh position={[0, 0.27, 0]}>
-        <cylinderGeometry args={[1.25, 1.3, 0.04, 96]} />
-        <meshStandardMaterial {...metal} color="#0a1829" roughness={0.4} />
-      </mesh>
-      {/* bevel */}
-      <mesh position={[0, 0.2, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.6, 0.1, 24, 128]} />
-        <meshStandardMaterial {...metal} color="#1c3b59" roughness={0.2} />
-      </mesh>
-      {/* glowing seam */}
-      <mesh position={[0, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[1.12, 0.018, 12, 128]} />
-        <meshBasicMaterial color={GLOW} toneMapped={false} />
-      </mesh>
-      {/* hub */}
-      <mesh position={[0, 0.32, 0]}>
-        <cylinderGeometry args={[0.42, 0.46, 0.14, 64]} />
-        <meshStandardMaterial {...metal} color="#12304c" roughness={0.18} />
-      </mesh>
-    </group>
-  );
-}
-
-function Keyhole() {
-  return (
-    <group position={[0, 0, 0.5]}>
-      <mesh>
-        <circleGeometry args={[0.1, 32]} />
-        <meshBasicMaterial color={GLOW} toneMapped={false} />
-      </mesh>
-      <mesh position={[0, -0.12, 0]}>
-        <planeGeometry args={[0.075, 0.2]} />
-        <meshBasicMaterial color={GLOW} toneMapped={false} />
-      </mesh>
-    </group>
-  );
+  return <VaultDoor radius={1.6} spinRef={dial} />;
 }
 
 function OrbitRing({
@@ -265,10 +176,7 @@ export default function HeroScene({
       <ambientLight intensity={0.25} />
       <directionalLight position={[3, 4, 5]} intensity={1.1} color="#a5d8ff" />
       <Rig parallax={parallax} compact={compact}>
-        <Door />
-        <Bolts />
-        <Wheel />
-        <Keyhole />
+        <HeroDoor />
         <OrbitRing radius={2.15} tilt={[1.2, 0.3, 0]} speed={0.22} nodes={5} />
         <OrbitRing radius={2.6} tilt={[0.5, -0.6, 0.4]} speed={-0.16} nodes={7} />
         <OrbitRing radius={3.1} tilt={[1.45, 0.9, 0]} speed={0.1} nodes={4} />
